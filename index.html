@@ -3,18 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>島ラッキョウの絶品レシピ | たまご屋</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- =========================================================
+      【編集エリア】ページのタイトル
+    ========================================================= -->
+    <title>島ラッキョウの絶品レシピ ＆ おすすめ商品 | たまご屋</title>
+    
+    <style>
+        /* =========================================================
+          【編集エリア】サイト全体のカラー・基本デザイン設定
+        ========================================================= */
+        :root {
+            --primary-color: #2e7d32;   /* メインカラー（深緑） */
+            --primary-hover: #1b5e20;   /* ホバー時の濃い緑 */
+            --accent-color: #e65100;    /* アクセントカラー（オレンジ） */
+            --bg-color: #fdfbf7;        /* 背景色（クリーム系） */
+            --card-bg: #ffffff;        /* カードの背景色（白） */
+            --text-color: #333333;      /* 文字色 */
+            --text-muted: #666666;      /* 補足文テキスト色 */
+            --border-color: #e0e0e0;    /* 枠線カラー */
+            --mercari-red: #ff0211;     /* メルカリ公式レッド */
+            --mercari-hover: #e0020f;   /* メルカリボタン ホバー時 */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* ─── ヘッダー ─── */
+        header {
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+            color: #ffffff;
+            text-align: center;
+            padding: 3rem 1rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+        }
+
+        .header-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header-nav a {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .header-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* ─── レイアウト構成 ─── */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .intro {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--primary-color);
+        }
+
+        .intro h2 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+        }
+
+        /* ─── 下処理案内バナー ─── */
+        .prep-banner {
+            background: linear-gradient(135deg, #ffffff 0%, #f4f8f4 100%);
+            border: 2px dashed var(--primary-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .prep-banner-text h3 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .prep-banner-text p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* ─── セクション見出し ─── */
+        .section-title {
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin: 2.5rem 0 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* ─── レシピ表示領域 ─── */
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .recipe-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .recipe-header {
+            background-color: #f4f8f4;
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .recipe-tag {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin-bottom: 0.5rem;
+        }
+
+        .recipe-card h3 {
+            font-size: 1.3rem;
+            color: var(--text-color);
+        }
+
+        .recipe-body {
+            padding: 1.25rem;
+            flex-grow: 1;
+        }
+
+        .ingredients {
+            margin-bottom: 1rem;
+            background-color: #fafafa;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .ingredients h4 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 0.2rem;
+        }
+
+        .ingredients ul {
+            list-style: none;
+        }
+
+        .ingredients li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+        }
+
+        .instructions h4 {
+            font-size: 0.95rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions ol {
+            padding-left: 1.2rem;
+            font-size: 0.95rem;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ─── アフィリエイト商品カタログ欄 ─── */
+        .catalog-section {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 1.5rem 1rem 2rem;
+            margin-top: 3rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .affiliate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 20px 15px;
+            justify-items: center;
+            margin-top: 1.5rem;
+        }
+
+        .affiliate-item {
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .affiliate-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .affiliate-item > div {
+            border: none !important;
+            background: transparent !important;
+        }
+
+        /* ─── アドバイス・フッターなど ─── */
+        .tips-box {
+            background-color: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .tips-box h3 {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .affiliate-box {
+            margin-top: 1.2rem;
+            padding-top: 1.2rem;
+            border-top: 1px dashed #ffd54f;
+        }
+
+        .affiliate-box h4 {
+            color: var(--primary-color);
+            font-size: 1.05rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .affiliate-box p {
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-prep {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 0.8rem 1.6rem;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 3px 6px rgba(230, 81, 0, 0.2);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-prep:hover {
+            background-color: #bf360c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(230, 81, 0, 0.3);
+        }
+
+        .btn-mercari {
+            display: inline-block;
+            background-color: var(--mercari-red);
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 0.85rem 1.8rem;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(255, 2, 17, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn-mercari:hover {
+            background-color: var(--mercari-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(255, 2, 17, 0.35);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.6rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .prep-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
 
+    <!-- =========================================================
+      【編集エリア】ヘッダータイトル・サブタイトル
+    ========================================================= -->
     <header>
         <h1>シャキシャキ美味しい！島ラッキョウレシピ</h1>
         <p>沖縄の旬の味わいを毎日の食卓に。簡単＆絶品おすすめ料理</p>
+        <nav class="header-nav">
+            <a href="#recipes">おすすめレシピ</a>
+            <a href="#products">おすすめ特産品</a>
+        </nav>
     </header>
 
     <div class="container">
 
+        <!-- =========================================================
+          【編集エリア】島ラッキョウの基本説明文
+        ========================================================= -->
         <section class="intro">
             <h2>島ラッキョウとは？</h2>
             <p>
@@ -22,7 +405,7 @@
             </p>
         </section>
 
-        <!-- 下処理ガイドへの誘導バナー -->
+        <!-- 下処理ガイド（prep.html）への誘導バナー -->
         <div class="prep-banner">
             <div class="prep-banner-text">
                 <h3>🔪 下処理のやり方はこちら</h3>
@@ -31,129 +414,181 @@
             <a href="prep.html" class="btn-prep">下処理ガイドを見る ➔</a>
         </div>
 
-        <h2 class="section-title">🍳 おすすめの絶品レシピ</h2>
-        <div class="recipe-grid">
+        <!-- =========================================================
+          【編集エリア】レシピセクション
+          ※新しいレシピを追加したい場合は <div class="recipe-card"> ～ </div> をまるごと複製してください
+        ========================================================= -->
+        <section id="recipes">
+            <h2 class="section-title">🍳 おすすめの絶品レシピ</h2>
+            <div class="recipe-grid">
 
-            <div class="recipe-card">
-                <div class="recipe-header">
-                    <span class="recipe-tag">定番おつまみ</span>
-                    <h3>島ラッキョウの塩漬け（浅漬け）</h3>
-                </div>
-                <div class="recipe-body">
-                    <div class="ingredients">
-                        <h4>材料（2人分）</h4>
-                        <ul>
-                            <li><span>島ラッキョウ</span><span>100g</span></li>
-                            <li><span>塩</span><span>小さじ1/2</span></li>
-                            <li><span>カツオ節</span><span>適量</span></li>
-                            <li><span>ごま油（お好みで）</span><span>少々</span></li>
-                        </ul>
+                <!-- ─── レシピ1 ─── -->
+                <div class="recipe-card">
+                    <div class="recipe-header">
+                        <span class="recipe-tag">定番おつまみ</span>
+                        <h3>島ラッキョウの塩漬け（浅漬け）</h3>
                     </div>
-                    <div class="instructions">
-                        <h4>作り方</h4>
-                        <ol>
-                            <li>下処理した島ラッキョウをポリ袋に入れる。</li>
-                            <li>塩を加え、袋の上から全体に馴染むよう優しく揉み込む。</li>
-                            <li>冷蔵庫で1〜2時間（できれば一晩）寝かせる。</li>
-                            <li>器に盛り付け、カツオ節とお好みでごま油をかけて完成！</li>
-                        </ol>
+                    <div class="recipe-body">
+                        <div class="ingredients">
+                            <h4>材料（2人分）</h4>
+                            <ul>
+                                <li><span>島ラッキョウ</span><span>100g</span></li>
+                                <li><span>塩</span><span>小さじ1/2</span></li>
+                                <li><span>カツオ節</span><span>適量</span></li>
+                                <li><span>ごま油（お好みで）</span><span>少々</span></li>
+                            </ul>
+                        </div>
+                        <div class="instructions">
+                            <h4>作り方</h4>
+                            <ol>
+                                <li>下処理した島ラッキョウをポリ袋に入れる。</li>
+                                <li>塩を加え、袋の上から全体に馴染むよう優しく揉み込む。</li>
+                                <li>冷蔵庫で1〜2時間（できれば一晩）寝かせる。</li>
+                                <li>器に盛り付け、カツオ節とお好みでごま油をかけて完成！</li>
+                            </ol>
+                        </div>
                     </div>
                 </div>
+
+                <!-- ─── レシピ2 ─── -->
+                <div class="recipe-card">
+                    <div class="recipe-header">
+                        <span class="recipe-tag">サクサク食感</span>
+                        <h3>島ラッキョウのサクサク天ぷら</h3>
+                    </div>
+                    <div class="recipe-body">
+                        <div class="ingredients">
+                            <h4>材料（2人分）</h4>
+                            <ul>
+                                <li><span>島ラッキョウ</span><span>100g</span></li>
+                                <li><span>天ぷら粉</span><span>50g</span></li>
+                                <li><span>冷水</span><span>80ml</span></li>
+                                <li><span>揚げ油</span><span>適量</span></li>
+                                <li><span>塩</span><span>適量</span></li>
+                            </ul>
+                        </div>
+                        <div class="instructions">
+                            <h4>作り方</h4>
+                            <ol>
+                                <li>島ラッキョウは水気をよく拭き取る。（数本ずつ束にして揚げると綺麗です）</li>
+                                <li>天ぷら粉と冷水を軽く混ぜて衣を作る。</li>
+                                <li>170〜180度に温めた油で、衣にくぐらせた島ラッキョウを揚げる。</li>
+                                <li>表面がサクッとしたら引き上げ、熱々のうちに塩を振って召し上がれ！</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── レシピ3 ─── -->
+                <div class="recipe-card">
+                    <div class="recipe-header">
+                        <span class="recipe-tag">ご飯が進む</span>
+                        <h3>島ラッキョウと豚肉の塩炒め</h3>
+                    </div>
+                    <div class="recipe-body">
+                        <div class="ingredients">
+                            <h4>材料（2人分）</h4>
+                            <ul>
+                                <li><span>島ラッキョウ</span><span>100g</span></li>
+                                <li><span>豚バラ薄切り肉</span><span>100g</span></li>
+                                <li><span>醤油・酒</span><span>各小さじ1</span></li>
+                                <li><span>塩・こしょう</span><span>少々</span></li>
+                                <li><span>ごま油</span><span>大さじ1/2</span></li>
+                            </ul>
+                        </div>
+                        <div class="instructions">
+                            <h4>作り方</h4>
+                            <ol>
+                                <li>豚肉と島ラッキョウを食べやすい大きさに切る。</li>
+                                <li>フライパンにごま油を熱し、豚肉を炒める。</li>
+                                <li>豚肉に火が通ったら島ラッキョウを加え、強火でサッと炒め合わせる。</li>
+                                <li>酒、醤油、塩こしょうで味を調え、手早く皿に盛る。</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── レシピ4 ─── -->
+                <div class="recipe-card">
+                    <div class="recipe-header">
+                        <span class="recipe-tag">超簡単 3分</span>
+                        <h3>おかかポン酢和え</h3>
+                    </div>
+                    <div class="recipe-body">
+                        <div class="ingredients">
+                            <h4>材料（2人分）</h4>
+                            <ul>
+                                <li><span>島ラッキョウ</span><span>80g</span></li>
+                                <li><span>ポン酢</span><span>大さじ1</span></li>
+                                <li><span>カツオ節</span><span>1パック（約2g）</span></li>
+                            </ul>
+                        </div>
+                        <div class="instructions">
+                            <h4>作り方</h4>
+                            <ol>
+                                <li>下処理した島ラッキョウを薄くスライス（斜め切り）にする。</li>
+                                <li>ボウルに入れ、ポン酢とカツオ節を入れて和える。</li>
+                                <li>器に盛り付けて完成。箸休めに最適です！</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+        </section>
 
-            <div class="recipe-card">
-                <div class="recipe-header">
-                    <span class="recipe-tag">サクサク食感</span>
-                    <h3>島ラッキョウのサクサク天ぷら</h3>
+
+        <!-- =========================================================
+          【★重要編集エリア】メルカリアフィリエイト商品カタログ
+          新しいアフィリエイトリンク（公式埋め込みコード）を追加する場合は、
+          <div class="affiliate-item"> ～ </div> を複製し、中身を貼り付けてください。
+        ========================================================= -->
+        <section id="products" class="catalog-section">
+            <h2 class="section-title" style="margin-top: 0; justify-content: center;">📦 おすすめの沖縄特産品・関連商品</h2>
+            <p class="section-desc">メルカリで出品中のおすすめ商品をピックアップしてご紹介します。</p>
+
+            <div class="affiliate-grid">
+
+                <!-- ─── 商品パーツ 1 ─── -->
+                <div class="affiliate-item">
+                    <!-- ↓ ここから：メルカリ公式のアフィリエイトコードをそのまま貼る ↓ -->
+                    <div style="background:#fff;width:120px;height:215px;box-sizing:border-box;border:1px solid #ccc;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;"><div style="line-height:0;"><img src="https://static.mercdn.net/images/mercari_affiliate/logo_horizontal.png" width="105"></div><a href="https://jp.mercari.com/item/m36721120515?afid=6652142838" style="width:100px;height:100px;background:#eee;" target="_self"><img src="https://ambassador-system.mercari.com/v1/i?id=m36721120515&svc=m" style="line-height:0;width:100px;height:100px;object-fit:contain;"/></a><div style="padding:12px 0;width:100%;text-align:center;"><a href="https://jp.mercari.com/item/m36721120515?afid=6652142838" style="width:100px;height:32px;background-color:#E32B36;border-radius:4px;line-height:14px;text-align:center;color:#fff;font-weight:bold;border:0;font-size:12px;display:inline-flex;justify-content:center;align-items:center;" target="_self">今すぐ購入</a></div></div>
+                    <!-- ↑ ここまで ↑ -->
                 </div>
-                <div class="recipe-body">
-                    <div class="ingredients">
-                        <h4>材料（2人分）</h4>
-                        <ul>
-                            <li><span>島ラッキョウ</span><span>100g</span></li>
-                            <li><span>天ぷら粉</span><span>50g</span></li>
-                            <li><span>冷水</span><span>80ml</span></li>
-                            <li><span>揚げ油</span><span>適量</span></li>
-                            <li><span>塩</span><span>適量</span></li>
-                        </ul>
-                    </div>
-                    <div class="instructions">
-                        <h4>作り方</h4>
-                        <ol>
-                            <li>島ラッキョウは水気をよく拭き取る。（数本ずつ束にして揚げると綺麗です）</li>
-                            <li>天ぷら粉と冷水を軽く混ぜて衣を作る。</li>
-                            <li>170〜180度に温めた油で、衣にくぐらせた島ラッキョウを揚げる。</li>
-                            <li>表面がサクッとしたら引き上げ、熱々のうちに塩を振って召し上がれ！</li>
-                        </ol>
-                    </div>
+
+                <!-- ─── 商品パーツ 2 ─── -->
+                <div class="affiliate-item">
+                    <!-- ↓ ここから：メルカリ公式のアフィリエイトコード ↓ -->
+                    <div style="background:#fff;width:120px;height:215px;box-sizing:border-box;border:1px solid #ccc;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;"><div style="line-height:0;"><img src="https://static.mercdn.net/images/mercari_affiliate/logo_horizontal.png" width="105"></div><a href="https://jp.mercari.com/item/m36721120515?afid=6652142838" style="width:100px;height:100px;background:#eee;" target="_self"><img src="https://ambassador-system.mercari.com/v1/i?id=m36721120515&svc=m" style="line-height:0;width:100px;height:100px;object-fit:contain;"/></a><div style="padding:12px 0;width:100%;text-align:center;"><a href="https://jp.mercari.com/item/m36721120515?afid=6652142838" style="width:100px;height:32px;background-color:#E32B36;border-radius:4px;line-height:14px;text-align:center;color:#fff;font-weight:bold;border:0;font-size:12px;display:inline-flex;justify-content:center;align-items:center;" target="_self">今すぐ購入</a></div></div>
+                    <!-- ↑ ここまで ↑ -->
                 </div>
+
+                <!-- ─── 商品パーツ 3 ─── -->
+                <div class="affiliate-item">
+                    <!-- ↓ ここから：メルカリ公式のアフィリエイトコード ↓ -->
+                    <div style="background:#fff;width:120px;height:215px;box-sizing:border-box;border:1px solid #ccc;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;"><div style="line-height:0;"><img src="https://static.mercdn.net/images/mercari_affiliate/logo_horizontal.png" width="105"></div><a href="https://jp.mercari.com/item/m36721120515?afid=6652142838" style="width:100px;height:100px;background:#eee;" target="_self"><img src="https://ambassador-system.mercari.com/v1/i?id=m36721120515&svc=m" style="line-height:0;width:100px;height:100px;object-fit:contain;"/></a><div style="padding:12px 0;width:100%;text-align:center;"><a href="https://jp.mercari.com/item/m36721120515?afid=6652142838" style="width:100px;height:32px;background-color:#E32B36;border-radius:4px;line-height:14px;text-align:center;color:#fff;font-weight:bold;border:0;font-size:12px;display:inline-flex;justify-content:center;align-items:center;" target="_self">今すぐ購入</a></div></div>
+                    <!-- ↑ ここまで ↑ -->
+                </div>
+
+                <!-- ※ 4つ目以降の枠を増やしたい場合は、ここから下へ <div class="affiliate-item"> ... </div> をコピーして追加してください -->
+
             </div>
+        </section>
 
-            <div class="recipe-card">
-                <div class="recipe-header">
-                    <span class="recipe-tag">ご飯が進む</span>
-                    <h3>島ラッキョウと豚肉の塩炒め</h3>
-                </div>
-                <div class="recipe-body">
-                    <div class="ingredients">
-                        <h4>材料（2人分）</h4>
-                        <ul>
-                            <li><span>島ラッキョウ</span><span>100g</span></li>
-                            <li><span>豚バラ薄切り肉</span><span>100g</span></li>
-                            <li><span>醤油・酒</span><span>各小さじ1</span></li>
-                            <li><span>塩・こしょう</span><span>少々</span></li>
-                            <li><span>ごま油</span><span>大さじ1/2</span></li>
-                        </ul>
-                    </div>
-                    <div class="instructions">
-                        <h4>作り方</h4>
-                        <ol>
-                            <li>豚肉と島ラッキョウを食べやすい大きさに切る。</li>
-                            <li>フライパンにごま油を熱し、豚肉を炒める。</li>
-                            <li>豚肉に火が通ったら島ラッキョウを加え、強火でサッと炒め合わせる。</li>
-                            <li>酒、醤油、塩こしょうで味を調え、手早く皿に盛る。</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
 
-            <div class="recipe-card">
-                <div class="recipe-header">
-                    <span class="recipe-tag">超簡単 3分</span>
-                    <h3>おかかポン酢和え</h3>
-                </div>
-                <div class="recipe-body">
-                    <div class="ingredients">
-                        <h4>材料（2人分）</h4>
-                        <ul>
-                            <li><span>島ラッキョウ</span><span>80g</span></li>
-                            <li><span>ポン酢</span><span>大さじ1</span></li>
-                            <li><span>カツオ節</span><span>1パック（約2g）</span></li>
-                        </ul>
-                    </div>
-                    <div class="instructions">
-                        <h4>作り方</h4>
-                        <ol>
-                            <li>下処理した島ラッキョウを薄くスライス（斜め切り）にする。</li>
-                            <li>ボウルに入れ、ポン酢とカツオ節を入れて和える。</li>
-                            <li>器に盛り付けて完成。箸休めに最適です！</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- メルカリアフィリエイト導線バナー（ポイント＆アドバイス欄） -->
+        <!-- =========================================================
+          【★重要編集エリア】プロフィール誘導バナー（保存のポイント欄）
+        ========================================================= -->
         <div class="tips-box">
             <h3>💡 保存のポイントとワンポイントアドバイス</h3>
             <p>
                 島ラッキョウは風味が強いため、冷蔵保存する場合はジップロックや密閉容器に入れるのがおすすめです。生のまま塩漬けにすると冷蔵で1〜2週間ほど美味しくいただけます。
             </p>
-            
+
             <div class="affiliate-box">
                 <h4>🌱 手間なくすぐ作れる！「皮むき済み島ラッキョウ」</h4>
                 <p>皮むきや根切りの下処理が面倒な方は、下処理・真空パック済みの新鮮な島ラッキョウがおすすめです。</p>
+                <!-- href属性内にプロフィールページなどのURLを指定します -->
                 <a href="https://jp.mercari.com/user/profile/764110598" target="_blank" rel="noopener noreferrer" class="btn-mercari">
                     メルカリでチェックする ➔
                 </a>
@@ -162,6 +597,9 @@
 
     </div>
 
+    <!-- =========================================================
+      【編集エリア】コピーライト・フッター
+    ========================================================= -->
     <footer>
         <p>&copy; たまご屋 島ラッキョウレシピガイド All Rights Reserved.</p>
     </footer>
