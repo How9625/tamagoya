@@ -6,7 +6,7 @@
     <!-- =========================================================
       【編集エリア】ページのタイトル
     ========================================================= -->
-    <title>島ラッキョウの絶品レシピ ＆ おすすめ商品 | たまご屋</title>
+    <title>島ラッキョウの絶品レシピ ＆ 購入・発注のご案内 | たまご屋</title>
     
     <style>
         /* =========================================================
@@ -245,9 +245,9 @@
             margin-bottom: 0.5rem;
         }
 
-        /* ─── アフィリエイト商品カタログ欄 ─── */
-        .catalog-section {
-            background-color: #ffffff;
+        /* ─── 購入・発注のご案内 ─── */
+        .purchase-section {
+            background-color: var(--card-bg);
             border-radius: 12px;
             padding: 1.5rem 1rem 2rem;
             margin-top: 3rem;
@@ -255,34 +255,59 @@
             border: 1px solid var(--border-color);
         }
 
-        .affiliate-grid {
+        .purchase-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 20px 15px;
-            justify-items: center;
-            margin-top: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+            gap: 1.5rem;
         }
 
-        .affiliate-item {
-            background: var(--card-bg);
-            padding: 12px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .purchase-card {
+            padding: 1.5rem;
+            background-color: #f4f8f4;
             border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
-        .affiliate-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        .purchase-card h3 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
         }
 
-        .affiliate-item > div {
-            border: none !important;
-            background: transparent !important;
+        .purchase-card p {
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+        }
+
+        .purchase-card a {
+            margin-top: auto;
+            text-align: center;
+        }
+
+        .btn-order {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 0.85rem 1.8rem;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.2);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .btn-order:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .purchase-card a:focus-visible {
+            outline: 3px solid var(--accent-color);
+            outline-offset: 4px;
         }
 
         /* ─── アドバイス・フッターなど ─── */
@@ -389,7 +414,7 @@
         <p>沖縄の旬の味わいを毎日の食卓に。簡単＆絶品おすすめ料理</p>
         <nav class="header-nav">
             <a href="#recipes">おすすめレシピ</a>
-            <a href="#products">おすすめ特産品</a>
+            <a href="#products">購入・発注のご案内</a>
         </nav>
     </header>
 
@@ -538,52 +563,23 @@
         </section>
 
 
-        <!-- =========================================================
-          【★重要編集エリア】メルカリアフィリエイト商品カタログ
-          新しいアフィリエイトリンク（公式埋め込みコード）を追加する場合は、
-          <div class="affiliate-item"> ～ </div> を複製し、中身を貼り付けてください。
-        ========================================================= -->
-        <section id="products" class="catalog-section">
-            <h2 class="section-title" style="margin-top: 0; justify-content: center;">📦 おすすめの沖縄特産品・関連商品</h2>
-            <p class="section-desc">メルカリで出品中のおすすめ商品をピックアップしてご紹介します。</p>
-
-            <div class="affiliate-grid">
-
-                <!-- ─── 商品パーツ 1 ─── -->
-                <div class="affiliate-item">
-                    <!-- ↓ ここから：メルカリ公式のアフィリエイトコードをそのまま貼る ↓ -->
-                    <div style="background:#fff;width:120px;height:215px;box-sizing:border-box;border:1px solid #ccc;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;"><div style="line-height:0;"><img src="https://static.mercdn.net/images/mercari_affiliate/logo_horizontal.png" width="105"></div><a href="https://jp.mercari.com/item/m81624461173?afid=6652142838" style="width:100px;height:100px;background:#eee;"}" target="_self"><img src="https://ambassador-system.mercari.com/v1/i?id=m81624461173&svc=m" style="line-height:0;width:100px;height:100px;object-fit:contain;"/></a><div style="padding:12px 0;width:100%;text-align:center;"><a href="https://jp.mercari.com/item/m81624461173?afid=6652142838" style="width:100px;height:32px;background-color:#E32B36;border-radius:4px;line-height:14px;text-align:center;color:#fff;font-weight:bold;border:0;font-size:12px;display:inline-flex;justify-content:center;align-items:center;" target="_self">今すぐ購入</a></div></div>                    <!-- ↑ ここまで ↑ -->
+        <!-- 購入・発注先への案内 -->
+        <section id="products" class="purchase-section" aria-labelledby="purchase-title">
+            <h2 id="purchase-title" class="section-title" style="margin-top: 0; justify-content: center;">🛒 購入・発注のご案内</h2>
+            <p class="section-desc">出品商品をご覧になりたい方、島らっきょうの見積もり・発注をご希望の方はこちらへ。</p>
+            <div class="purchase-grid">
+                <div class="purchase-card">
+                    <h3>メルカリの出品商品を見る</h3>
+                    <p>たまご屋の出品一覧はこちら。販売中の商品や詳細をメルカリでご確認いただけます。</p>
+                    <a href="https://jp.mercari.com/user/profile/764110598" target="_blank" rel="noopener noreferrer" class="btn-mercari">メルカリの出品一覧を見る ➔</a>
                 </div>
-
-                <!-- ─── 商品パーツ 2 ─── -->
-                <div class="affiliate-item">
-                    <!-- ↓ ここから：メルカリ公式のアフィリエイトコード ↓ -->
-                    <div style="background:#fff;width:120px;height:215px;box-sizing:border-box;border:1px solid #ccc;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;"><div style="line-height:0;"><img src="https://static.mercdn.net/images/mercari_affiliate/logo_horizontal.png" width="105"></div><a href="https://jp.mercari.com/item/m50929245771?afid=6652142838" style="width:100px;height:100px;background:#eee;"}" target="_blank"><img src="https://ambassador-system.mercari.com/v1/i?id=m50929245771&svc=m" style="line-height:0;width:100px;height:100px;object-fit:contain;"/></a><div style="padding:12px 0;width:100%;text-align:center;"><a href="https://jp.mercari.com/item/m50929245771?afid=6652142838" style="width:100px;height:32px;background-color:#E32B36;border-radius:4px;line-height:14px;text-align:center;color:#fff;font-weight:bold;border:0;font-size:12px;display:inline-flex;justify-content:center;align-items:center;" target="_blank">今すぐ購入</a></div></div>                    <!-- ↑ ここまで ↑ -->
+                <div class="purchase-card">
+                    <h3>島らっきょうの見積もり・発注</h3>
+                    <p>島らっきょうのご注文をご検討中の方はこちら。ご希望の数量などを選んで、お見積もり・発注にお進みください。</p>
+                    <a href="https://how9625.github.io/shimarakkyo-order/" target="_blank" rel="noopener noreferrer" class="btn-order">島らっきょう見積もり・発注 ➔</a>
                 </div>
-
-                <!-- ─── 商品パーツ 3 ─── -->
-                <div class="affiliate-item">
-                    <!-- ↓ ここから：メルカリ公式のアフィリエイトコード ↓ -->
-                    <div style="background:#fff;width:120px;height:215px;box-sizing:border-box;border:1px solid #ccc;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;"><div style="line-height:0;"><img src="https://static.mercdn.net/images/mercari_affiliate/logo_horizontal.png" width="105"></div><a href="https://jp.mercari.com/item/m44998201052?afid=6652142838" style="width:100px;height:100px;background:#eee;"}" target="_blank"><img src="https://ambassador-system.mercari.com/v1/i?id=m44998201052&svc=m" style="line-height:0;width:100px;height:100px;object-fit:contain;"/></a><div style="padding:12px 0;width:100%;text-align:center;"><a href="https://jp.mercari.com/item/m44998201052?afid=6652142838" style="width:100px;height:32px;background-color:#E32B36;border-radius:4px;line-height:14px;text-align:center;color:#fff;font-weight:bold;border:0;font-size:12px;display:inline-flex;justify-content:center;align-items:center;" target="_blank">今すぐ購入</a></div></div>                    <!-- ↑ ここまで ↑ -->
-                </div>
-
-                <div class="affiliate-item">
-                    <div style="background:#fff;width:120px;height:215px;box-sizing:border-box;border:1px solid #ccc;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;"><div style="line-height:0;"><img src="https://static.mercdn.net/images/mercari_affiliate/logo_horizontal.png" width="105"></div><a href="https://jp.mercari.com/item/m37548799272?afid=6652142838" style="width:100px;height:100px;background:#eee;"}" target="_blank"><img src="https://ambassador-system.mercari.com/v1/i?id=m37548799272&svc=m" style="line-height:0;width:100px;height:100px;object-fit:contain;"/></a><div style="padding:12px 0;width:100%;text-align:center;"><a href="https://jp.mercari.com/item/m37548799272?afid=6652142838" style="width:100px;height:32px;background-color:#E32B36;border-radius:4px;line-height:14px;text-align:center;color:#fff;font-weight:bold;border:0;font-size:12px;display:inline-flex;justify-content:center;align-items:center;" target="_blank">今すぐ購入</a></div></div>
-                </div>
-
-                <div class="affiliate-item">
-                    <div style="background:#fff;width:120px;height:215px;box-sizing:border-box;border:1px solid #ccc;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;"><div style="line-height:0;"><img src="https://static.mercdn.net/images/mercari_affiliate/logo_horizontal.png" width="105"></div><a href="https://jp.mercari.com/item/m30018687266?afid=6652142838" style="width:100px;height:100px;background:#eee;"}" target="_blank"><img src="https://ambassador-system.mercari.com/v1/i?id=m30018687266&svc=m" style="line-height:0;width:100px;height:100px;object-fit:contain;"/></a><div style="padding:12px 0;width:100%;text-align:center;"><a href="https://jp.mercari.com/item/m30018687266?afid=6652142838" style="width:100px;height:32px;background-color:#E32B36;border-radius:4px;line-height:14px;text-align:center;color:#fff;font-weight:bold;border:0;font-size:12px;display:inline-flex;justify-content:center;align-items:center;" target="_blank">今すぐ購入</a></div></div>
-                </div>
-
-                <div class="affiliate-item">
-                    <div style="background:#fff;width:120px;height:215px;box-sizing:border-box;border:1px solid #ccc;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;"><div style="line-height:0;"><img src="https://static.mercdn.net/images/mercari_affiliate/logo_horizontal.png" width="105"></div><a href="https://jp.mercari.com/item/m93559684402?afid=6652142838" style="width:100px;height:100px;background:#eee;"}" target="_blank"><img src="https://ambassador-system.mercari.com/v1/i?id=m93559684402&svc=m" style="line-height:0;width:100px;height:100px;object-fit:contain;"/></a><div style="padding:12px 0;width:100%;text-align:center;"><a href="https://jp.mercari.com/item/m93559684402?afid=6652142838" style="width:100px;height:32px;background-color:#E32B36;border-radius:4px;line-height:14px;text-align:center;color:#fff;font-weight:bold;border:0;font-size:12px;display:inline-flex;justify-content:center;align-items:center;" target="_blank">今すぐ購入</a></div></div>
-                </div>
-
-                <!-- ※ 4つ目以降の枠を増やしたい場合は、ここから下へ <div class="affiliate-item"> ... </div> をコピーして追加してください -->
-
             </div>
         </section>
-
 
         <!-- =========================================================
           【★重要編集エリア】プロフィール誘導バナー（保存のポイント欄）
