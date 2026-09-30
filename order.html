@@ -673,6 +673,25 @@ button.primary:disabled {
     line-height: 1.9;
 }
 
+.mercari-follow-notice {
+    margin-top: 22px;
+    padding: 18px;
+    border: 2px solid #e6c965;
+    border-radius: 12px;
+    background: #fff8df;
+    color: #333;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+.mercari-follow-notice strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #765d17;
+    font-size: 16px;
+}
+
 .order-number {
     margin-top: 22px;
     padding: 15px;
@@ -735,11 +754,6 @@ button.primary:disabled {
 
 }
 
-
-.site-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:20px 0; }
-.site-nav a { display:inline-block; padding:10px 16px; border-radius:24px; background:#2e7d32; color:#fff; text-decoration:none; font-weight:600; }
-.site-nav a:hover { background:#1b5e20; }
-.site-nav a:focus-visible { outline:3px solid #e65100; outline-offset:3px; }
 </style>
 </head>
 
@@ -757,11 +771,6 @@ button.primary:disabled {
         現在価格からお見積もりを自動作成します。
     </div>
 
-<nav class="site-nav" aria-label="サイト内メニュー">
-    <a href="index.html">レシピ一覧</a>
-    <a href="prep.html">下処理ガイド</a>
-    <a href="order.html" aria-current="page">見積もり・発注</a>
-</nav>
 </header>
 
 
@@ -1472,6 +1481,14 @@ button.primary:disabled {
         内容を確認後、
         メルカリにて専用ページを作成いたします。
 
+    </div>
+
+
+    <div class="mercari-follow-notice" role="note">
+        <strong>専用ページの出品通知について</strong>
+        メルカリで当店のアカウントをフォローして、
+        <b>出品通知をON</b>にしておいてください。<br>
+        専用ページの出品に気づきやすくなります。
     </div>
 
 
@@ -2481,7 +2498,7 @@ async function sendOrder() {
 
     try {
 
-        await fetch(
+        const response = await fetch(
             gasUrl,
             {
                 method: "POST",
@@ -2497,6 +2514,11 @@ async function sendOrder() {
                     )
             }
         );
+
+
+        if (!response.ok) {
+            throw new Error("注文送信先でエラーが発生しました。");
+        }
 
 
         document
