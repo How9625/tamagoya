@@ -166,7 +166,7 @@ header p {
 /* レシピグリッド */
 .recipe-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: 1.5rem;
 }
 
@@ -353,3 +353,9 @@ footer {
         text-align: center;
     }
 }
+
+.header-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:20px; }
+.header-nav a { color:#fff; background:rgba(255,255,255,.2); padding:8px 16px; border-radius:24px; text-decoration:none; font-weight:bold; }
+.header-nav a:hover { background:rgba(255,255,255,.4); }
+.header-nav a:focus-visible { outline:3px solid #fff; outline-offset:3px; }
+.nav-box { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; }
