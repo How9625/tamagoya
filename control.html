@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>島らっきょう 管理ページ</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html {
+        color-scheme: light;
+    }
+
+    body {
+        margin: 0;
+        background: #f4f4f2;
+        color: #222;
+        font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            "Hiragino Kaku Gothic ProN",
+            "Yu Gothic",
+            sans-serif;
+    }
+
+    .container {
+        width: min(680px, calc(100% - 32px));
+        margin: 40px auto;
+    }
+
+    header {
+        margin-bottom: 25px;
+    }
+
+    h1 {
+        margin: 0 0 7px;
+        font-size: 27px;
+    }
+
+    .subtitle {
+        color: #777;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .card {
+        margin-bottom: 18px;
+        padding: 24px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 3px 14px rgba(0,0,0,.06);
+    }
+
+    h2 {
+        margin: 0 0 20px;
+        font-size: 19px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    input {
+        width: 100%;
+        padding: 14px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background: #fff;
+        color: #111;
+        font-size: 17px;
+    }
+
+    .help {
+        margin-top: 6px;
+        color: #999;
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .result {
+        margin-top: 25px;
+        padding: 22px;
+        background: #f7f7f5;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .result-label {
+        color: #777;
+        font-size: 12px;
+    }
+
+    .result-price {
+        margin-top: 4px;
+        font-size: 38px;
+        font-weight: bold;
+    }
+
+    .calculation {
+        margin-top: 8px;
+        color: #888;
+        font-size: 12px;
+    }
+
+    textarea {
+        display: block;
+        width: 100%;
+        min-height: 120px;
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background: #fff !important;
+        color: #111 !important;
+        -webkit-text-fill-color: #111;
+        font-family: monospace;
+        font-size: 14px;
+        line-height: 1.7;
+        resize: vertical;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 12px;
+        padding: 16px;
+        border: 0;
+        border-radius: 11px;
+        background: #222;
+        color: #fff;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    button.secondary {
+        border: 2px solid #222;
+        background: #fff;
+        color: #222;
+    }
+
+    .success {
+        margin-top: 10px;
+        color: #16823b;
+        font-size: 13px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .notice {
+        padding: 14px;
+        background: #fff8df;
+        color: #444;
+        border-radius: 10px;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    @media (max-width: 520px) {
+        .container {
+            margin-top: 22px;
+        }
+
+        .card {
+            padding: 20px;
+        }
+
+        .result-price {
+            font-size: 34px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+
+        <h1>
+            島らっきょう 管理ページ
+        </h1>
+
+        <div class="subtitle">
+            仕入れ価格から販売基準価格を計算します。
+        </div>
+
+    </header>
+
+
+    <section class="card">
+
+        <h2>
+            価格設定
+        </h2>
+
+
+        <div class="form-group">
+
+            <label for="costPrice">
+                800gあたりの仕入れ価格
+            </label>
+
+            <input
+                type="number"
+                id="costPrice"
+                value="2200"
+                min="0"
+                step="10"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="margin">
+                下処理・経費・利益等の加算額
+            </label>
+
+            <input
+                type="number"
+                id="margin"
+                value="1800"
+                min="0"
+                step="10"
+            >
+
+        </div>
+
+
+        <div class="result">
+
+            <div class="result-label">
+                800g 販売基準価格
+            </div>
+
+            <div
+                class="result-price"
+                id="basePriceDisplay"
+            >
+                ¥4,000
+            </div>
+
+            <div
+                class="calculation"
+                id="calculationDisplay"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+    <section class="card">
+
+        <h2>
+            settings.json
+        </h2>
+
+        <div class="help" style="margin-bottom:12px;">
+            下記の内容をGitHubのsettings.jsonへ貼り付けてください。
+        </div>
+
+
+        <textarea
+            id="settingsOutput"
+            readonly
+            spellcheck="false"
+        ></textarea>
+
+
+        <button
+            type="button"
+            onclick="copySettings()"
+        >
+            📋 settings.jsonをコピー
+        </button>
+
+
+        <button
+            class="secondary"
+            type="button"
+            onclick="openOrderPage()"
+        >
+            注文ページを確認
+        </button>
+
+
+        <div
+            class="success hidden"
+            id="copySuccess"
+        >
+            コピーしました！
+        </div>
+
+    </section>
+
+
+    <section class="card">
+
+        <div class="notice">
+            <strong>価格を変更する手順</strong><br><br>
+
+            ① このページで仕入れ価格を変更<br>
+            ② settings.jsonをコピー<br>
+            ③ GitHubのsettings.jsonを開く<br>
+            ④ 内容を貼り替える<br>
+            ⑤ Commit changes<br><br>
+
+            購入者用URLを変更する必要はありません。
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+let currentSettings = {"basePrice": 3800, "gasUrl": "https://script.google.com/macros/s/AKfycbx78a3YGFegz7dOcIc3vIYdB13I6p5OKNwziTlJYDi2QgtCr81i7hXG5wFnN_xEBQ-0/exec"};
+
+const costInput =
+    document.getElementById(
+        "costPrice"
+    );
+
+
+const marginInput =
+    document.getElementById(
+        "margin"
+    );
+
+
+/* ========================================
+   基準価格
+======================================== */
+
+function calculateBasePrice() {
+
+    const cost =
+        Number(
+            costInput.value
+        ) || 0;
+
+
+    const margin =
+        Number(
+            marginInput.value
+        ) || 0;
+
+
+    return (
+        Math.round(
+            (cost + margin) / 10
+        ) * 10
+    );
+}
+
+
+/* ========================================
+   表示更新
+======================================== */
+
+function updatePrice() {
+
+    const cost =
+        Number(
+            costInput.value
+        ) || 0;
+
+
+    const margin =
+        Number(
+            marginInput.value
+        ) || 0;
+
+
+    const price =
+        calculateBasePrice();
+
+
+    document
+        .getElementById(
+            "basePriceDisplay"
+        )
+        .textContent =
+            "¥" +
+            price.toLocaleString();
+
+
+    document
+        .getElementById(
+            "calculationDisplay"
+        )
+        .textContent =
+            "仕入れ ¥" +
+            cost.toLocaleString() +
+            " ＋ 加算 ¥" +
+            margin.toLocaleString();
+
+
+    /*
+        JSON生成
+    */
+
+    const settings = {
+        ...currentSettings,
+        basePrice: price
+    };
+
+
+    document
+        .getElementById(
+            "settingsOutput"
+        )
+        .value =
+            JSON.stringify(
+                settings,
+                null,
+                4
+            );
+}
+
+
+/* ========================================
+   コピー
+======================================== */
+
+async function copySettings() {
+
+    const text =
+        document
+            .getElementById(
+                "settingsOutput"
+            )
+            .value;
+
+
+    try {
+
+        await navigator
+            .clipboard
+            .writeText(
+                text
+            );
+
+    } catch (error) {
+
+        const textarea =
+            document.getElementById(
+                "settingsOutput"
+            );
+
+
+        textarea.focus();
+        textarea.select();
+
+        document.execCommand(
+            "copy"
+        );
+
+    }
+
+
+    document
+        .getElementById(
+            "copySuccess"
+        )
+        .classList
+        .remove(
+            "hidden"
+        );
+
+
+    setTimeout(
+        () => {
+
+            document
+                .getElementById(
+                    "copySuccess"
+                )
+                .classList
+                .add(
+                    "hidden"
+                );
+
+        },
+        2000
+    );
+}
+
+
+/* ========================================
+   注文ページ確認
+======================================== */
+
+function openOrderPage() {
+
+    const orderURL =
+        new URL(
+            "./order.html",
+            window.location.href
+        );
+
+
+    window.open(
+        orderURL.href,
+        "_blank"
+    );
+}
+
+
+/* ========================================
+   入力
+======================================== */
+
+costInput.addEventListener(
+    "input",
+    updatePrice
+);
+
+
+marginInput.addEventListener(
+    "input",
+    updatePrice
+);
+
+
+/* ========================================
+   初期化
+======================================== */
+
+updatePrice();
+
+// 読み込んだ送信先などを保持し、基準価格だけ更新します。
+async function loadCurrentSettings() {
+    try {
+        const response = await fetch("./settings.json?t=" + Date.now(), {cache: "no-store"});
+        if (!response.ok) throw new Error("設定取得エラー");
+        const settings = await response.json();
+        if (typeof settings.gasUrl !== "string" || !settings.gasUrl.trim()) {
+            throw new Error("送信先が未設定です");
+        }
+        currentSettings = settings;
+        updatePrice();
+    } catch (error) {
+        // 現在の設定を取得できない場合も、この統合版の既存送信先を保持します。
+        console.warn("設定の取得に失敗しました。既存の送信先を保持します。", error);
+    }
+}
+loadCurrentSettings();
+
+</script>
+
+</body>
+</html>
