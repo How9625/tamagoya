@@ -1506,7 +1506,7 @@ button:disabled { opacity:.6; cursor:wait; }
 
 
     <a class="action-link hidden" id="mercariShopButton" target="_blank" rel="noopener noreferrer">メルカリの当店ページを開く</a>
-    <button class="secondary" type="button" onclick="copyCompletedOrder()">注文内容・注文番号をコピー</button>
+    <button class="secondary" type="button" onclick="downloadCompletedOrder()">注文内容・注文番号をテキストでダウンロード</button>
     <div class="status-message" id="copyOrderStatus" role="status"></div>
 
     <div class="order-number">
@@ -2533,22 +2533,31 @@ async function confirmOrder() {
     }
 }
 
-async function copyCompletedOrder() {
+function downloadCompletedOrder() {
     if (!completedOrder) return;
-    const text = orderText(completedOrder);
     const status = document.getElementById("copyOrderStatus");
+    let objectURL;
     try {
-        await navigator.clipboard.writeText(text);
-        status.textContent = "注文内容・注文番号をコピーしました。";
-    } catch (_) {
-        // Clipboard APIが使えない場合は選択可能なテキストを表示。
-        status.replaceChildren();
-        const area = document.createElement("textarea");
-        area.value = text; area.readOnly = true; area.style.width = "100%"; area.rows = 12;
-        status.append("以下の内容を選択してコピーしてください。", area);
-        area.focus(); area.select();
+        const text = "島らっきょう ご注文控え\r\n\r\n" +
+            orderText(completedOrder).replace(/\n/g, "\r\n") +
+            "\r\n\r\n発送予定日・到着想定日は目安です。\r\n";
+        // UTF-8 BOM付きにして、日本語の文字化けを防ぎます。
+        const blob = new Blob(["\uFEFF", text], {type: "text/plain;charset=utf-8"});
+        objectURL = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = objectURL;
+        const safeNumber = completedOrder.orderNumber.replace(/[^a-zA-Z0-9_-]/g, "_");
+        link.download = "島らっきょう_注文控え_" + safeNumber + ".txt";
+        document.body.appendChild(link);
+        try { link.click(); } finally { link.remove(); }
+        status.textContent = "ダウンロードを開始しました。ブラウザのダウンロード一覧をご確認ください。";
+    } catch (error) {
+        status.textContent = "ダウンロードを開始できませんでした。もう一度お試しください。";
+    } finally {
+        if (objectURL) setTimeout(() => URL.revokeObjectURL(objectURL), 60000);
     }
 }
+
 
 document.getElementById("confirmDialog").addEventListener("cancel", event => {
     event.preventDefault();
