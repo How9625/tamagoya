@@ -64,6 +64,7 @@
         }
 
         .header-nav {
+            flex-wrap: wrap;
             display: flex;
             justify-content: center;
             gap: 10px;
@@ -158,7 +159,7 @@
         /* ─── レシピ表示領域 ─── */
         .recipe-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
             gap: 1.5rem;
         }
 
@@ -412,9 +413,11 @@
     <header>
         <h1>シャキシャキ美味しい！島ラッキョウレシピ</h1>
         <p>沖縄の旬の味わいを毎日の食卓に。簡単＆絶品おすすめ料理</p>
-        <nav class="header-nav">
+        <nav class="header-nav" aria-label="サイト内メニュー">
             <a href="#recipes">おすすめレシピ</a>
-            <a href="#products">購入・発注のご案内</a>
+            <a href="prep.html">下処理ガイド</a>
+            <a href="order.html">見積もり・発注</a>
+            <a href="#products">購入のご案内</a>
         </nav>
     </header>
 
@@ -576,7 +579,7 @@
                 <div class="purchase-card">
                     <h3>島らっきょうの見積もり・発注</h3>
                     <p>島らっきょうのご注文をご検討中の方はこちら。ご希望の数量などを選んで、お見積もり・発注にお進みください。</p>
-                    <a href="https://how9625.github.io/shimarakkyo-order/" target="_blank" rel="noopener noreferrer" class="btn-order">島らっきょう見積もり・発注 ➔</a>
+                    <a href="order.html" class="btn-order">島らっきょう見積もり・発注 ➔</a>
                 </div>
             </div>
         </section>
