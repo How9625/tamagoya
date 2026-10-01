@@ -8,6 +8,2705 @@
 <title>島らっきょう 注文・お見積もり</title>
 
 <style>
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>島らっきょう 注文・お見積もり</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    color-scheme: light;
+}
+
+body {
+    margin: 0;
+    background: #f5f5f3;
+    color: #222;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Hiragino Kaku Gothic ProN",
+        "Yu Gothic",
+        sans-serif;
+}
+
+.container {
+    width: min(720px, calc(100% - 32px));
+    margin: 40px auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.subtitle {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.card {
+    background: #fff;
+    color: #222;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 3px 14px rgba(0,0,0,.06);
+}
+
+.step {
+    color: #888;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: .08em;
+}
+
+h2 {
+    margin: 6px 0 18px;
+    font-size: 20px;
+}
+
+
+/* ========================================
+   入力
+======================================== */
+
+.form-group {
+    margin-bottom: 17px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.required {
+    display: inline-block;
+    margin-left: 5px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: #b83535;
+    color: #fff;
+    font-size: 10px;
+    font-weight: normal;
+}
+
+.form-group input {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #fff !important;
+    color: #111 !important;
+    -webkit-text-fill-color: #111;
+    font-size: 16px;
+}
+
+.form-group input::placeholder {
+    color: #c4c4c4 !important;
+    -webkit-text-fill-color: #c4c4c4 !important;
+    opacity: 1;
+}
+
+.form-group input::-webkit-input-placeholder {
+    color: #c4c4c4 !important;
+    -webkit-text-fill-color: #c4c4c4 !important;
+    opacity: 1;
+}
+
+.form-group input::-moz-placeholder {
+    color: #c4c4c4 !important;
+    opacity: 1;
+}
+
+.form-group input:-ms-input-placeholder {
+    color: #c4c4c4 !important;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #222;
+}
+
+.form-help {
+    margin-top: 6px;
+    color: #888;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+/* ========================================
+   選択肢
+======================================== */
+
+.choice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.choice {
+    position: relative;
+}
+
+.choice input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.choice label {
+    display: flex;
+    min-height: 76px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 14px 12px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+    color: #222;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .15s;
+}
+
+.choice label small {
+    display: block;
+    margin-top: 4px;
+    color: #777;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.choice input:checked + label {
+    border-color: #222;
+    background: #f1f1ef;
+}
+
+
+/* ========================================
+   重量
+======================================== */
+
+.weight-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.weight-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #222;
+    color: #fff;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.weight-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.weight {
+    min-width: 130px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.hint {
+    margin-top: 12px;
+    color: #888;
+    font-size: 13px;
+    text-align: center;
+}
+
+.discount-guide {
+    margin-top: 18px;
+    padding: 12px;
+    background: #f7f7f5;
+    border-radius: 10px;
+    color: #777;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+
+/* ========================================
+   受注生産
+======================================== */
+
+.production-box {
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid #d9e7db;
+    border-radius: 12px;
+    background: #f2f8f3;
+}
+
+.production-title {
+    margin-bottom: 7px;
+    color: #35643c;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.production-description {
+    color: #555;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.production-days {
+    margin-top: 10px;
+    color: #555;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.production-days strong {
+    color: #35643c;
+}
+
+.schedule-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.schedule-item {
+    padding: 14px 10px;
+    background: #fff;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.schedule-label {
+    margin-bottom: 5px;
+    color: #777;
+    font-size: 11px;
+}
+
+.schedule-value {
+    color: #222;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.schedule-item.arrival .schedule-value {
+    color: #16823b;
+}
+
+.schedule-note {
+    margin-top: 12px;
+    color: #777;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+
+/* ========================================
+   配送
+======================================== */
+
+.shipping-guide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.shipping-guide-item {
+    padding: 13px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.shipping-guide-item strong {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.shipping-guide-item.normal {
+    background: #eef7ef;
+    color: #35643c;
+}
+
+.shipping-guide-item.cool {
+    background: #eef5ff;
+    color: #365f8a;
+}
+
+
+/* ========================================
+   BASE案内
+======================================== */
+
+.base-guide {
+    margin-top: 20px;
+    padding: 22px;
+    border: 1px solid #cbdced;
+    border-radius: 14px;
+    background: #f4f8fc;
+}
+
+.base-guide-title {
+    margin-bottom: 10px;
+    color: #294f77;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.base-guide-text {
+    color: #4d5f70;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+.base-reason {
+    margin-top: 14px;
+    padding: 13px;
+    background: #fff;
+    border-radius: 10px;
+    color: #444;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.base-reason strong {
+    color: #285d8e;
+}
+
+.base-button {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+    padding: 17px;
+    border: 0;
+    border-radius: 12px;
+    background: #2f638f;
+    color: #fff !important;
+    text-decoration: none;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .15s;
+}
+
+.base-button:hover {
+    opacity: .88;
+}
+
+.base-note {
+    margin-top: 10px;
+    color: #71808e;
+    font-size: 11px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+
+/* ========================================
+   配送遅延保証
+======================================== */
+
+.delivery-support {
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid #e6c965;
+    border-radius: 12px;
+    background: #fffaf0;
+}
+
+.delivery-support-title {
+    margin-bottom: 9px;
+    color: #765d17;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.delivery-support-text {
+    color: #555;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.delivery-support-highlight {
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: 9px;
+    background: #fff;
+    color: #222;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.delivery-support-highlight strong {
+    color: #a26500;
+    font-size: 17px;
+}
+
+.delivery-support-flow {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #eadfb9;
+    color: #666;
+    font-size: 11px;
+    line-height: 1.9;
+}
+
+
+/* ========================================
+   見積もり
+======================================== */
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 11px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.summary-row span {
+    color: #666;
+}
+
+.summary-row strong {
+    text-align: right;
+}
+
+.price {
+    padding: 25px 0 8px;
+    text-align: center;
+}
+
+.price-label {
+    color: #777;
+    font-size: 13px;
+}
+
+.price-value {
+    margin-top: 3px;
+    color: #222;
+    font-size: 38px;
+    font-weight: bold;
+}
+
+.price-shipping {
+    margin-top: 5px;
+    color: #16823b;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.discount-detail {
+    min-height: 22px;
+    margin-top: 7px;
+    color: #777;
+    font-size: 12px;
+}
+
+.discount-detail.active {
+    color: #16823b;
+    font-weight: bold;
+}
+
+.unpeeled-notice {
+    margin-top: 14px;
+    padding: 12px;
+    background: #eef7ef;
+    border-radius: 10px;
+    color: #35643c;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+
+/* ========================================
+   注意
+======================================== */
+
+.notice {
+    margin-top: 15px;
+    padding: 14px;
+    background: #fff8df;
+    color: #333;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.normal-order-notice {
+    margin-top: 15px;
+    padding: 14px;
+    background: #eef7ef;
+    color: #35643c;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+
+/* ========================================
+   ボタン
+======================================== */
+
+button.primary {
+    width: 100%;
+    margin-top: 18px;
+    padding: 17px;
+    border: 0;
+    border-radius: 12px;
+    background: #222;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .15s;
+}
+
+button.primary:hover {
+    opacity: .88;
+}
+
+button.primary:disabled {
+    background: #aaa;
+    opacity: 1;
+    cursor: wait;
+}
+
+
+/* ========================================
+   状態
+======================================== */
+
+.loading {
+    padding: 30px;
+    color: #777;
+    text-align: center;
+    line-height: 1.8;
+}
+
+.error {
+    padding: 18px;
+    background: #fff1f1;
+    color: #a32626;
+    border-radius: 12px;
+    text-align: center;
+    line-height: 1.7;
+}
+
+.error-detail {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #a85c5c;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ========================================
+   完了
+======================================== */
+
+.complete-card {
+    padding-top: 36px;
+    padding-bottom: 36px;
+    text-align: center;
+}
+
+.complete-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 20px;
+    background: #eaf7ed;
+    color: #16823b;
+    border-radius: 50%;
+    font-size: 34px;
+    font-weight: bold;
+}
+
+.complete-title {
+    margin-bottom: 12px;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+.complete-text {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+.mercari-follow-notice {
+    margin-top: 22px;
+    padding: 18px;
+    border: 2px solid #e6c965;
+    border-radius: 12px;
+    background: #fff8df;
+    color: #333;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+.mercari-follow-notice strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #765d17;
+    font-size: 16px;
+}
+
+.order-number {
+    margin-top: 22px;
+    padding: 15px;
+    background: #f7f7f5;
+    border-radius: 10px;
+    color: #666;
+    font-size: 12px;
+}
+
+.order-number strong {
+    display: block;
+    margin-top: 5px;
+    color: #222;
+    font-size: 19px;
+}
+
+.complete-summary {
+    margin-top: 20px;
+    padding: 16px;
+    background: #fafafa;
+    border-radius: 10px;
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+
+/* ========================================
+   スマホ
+======================================== */
+
+@media (max-width: 520px) {
+
+    .container {
+        margin-top: 22px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .choice-grid,
+    .shipping-guide,
+    .schedule-box {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .price-value {
+        font-size: 34px;
+    }
+
+    .weight {
+        min-width: 110px;
+        font-size: 27px;
+    }
+
+}
+
+
+.action-link { display:block; margin-top:14px; padding:16px; border-radius:12px; background:#c93232; color:#fff; text-decoration:none; font-weight:bold; }
+dialog { width:min(620px,calc(100% - 32px)); max-height:85vh; overflow:auto; border:0; border-radius:16px; padding:24px; color:#222; }
+dialog::backdrop { background:rgba(0,0,0,.5); }
+button.secondary { width:100%; margin-top:12px; padding:14px; border:1px solid #777; border-radius:10px; background:#fff; color:#222; cursor:pointer; }
+button:disabled { opacity:.6; cursor:wait; }
+.status-message { margin-top:12px; line-height:1.8; color:#555; }
+
+/* メール送信中の待機画面 */
+#sendingDialog {
+    width: min(420px, calc(100vw - 48px));
+    box-sizing: border-box;
+    padding: 32px 24px;
+    border: 0;
+    border-radius: 20px;
+    color: #24352a;
+    text-align: center;
+    box-shadow: 0 20px 70px #0004;
+}
+#sendingDialog::backdrop { background: rgb(15 25 18 / 65%); }
+#sendingDialog h2 { margin: 20px 0 12px; font-size: 21px; line-height: 1.6; }
+#sendingDialog p { line-height: 1.8; }
+.sending-spinner {
+    width: 56px; height: 56px; margin: 0 auto;
+    border: 6px solid #e2eee5; border-top-color: #35784c;
+    border-radius: 50%; animation: sending-spin 1s linear infinite;
+}
+.sending-elapsed { font-size: 14px; color: #56685b; font-variant-numeric: tabular-nums; }
+.sending-note { margin-bottom: 0; padding: 12px; background: #eef7ef; border-radius: 10px; font-size: 13px; }
+@keyframes sending-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<header>
+
+    <h1>島らっきょう</h1>
+
+    <div class="subtitle">
+        ご希望の商品内容を選択すると<br>
+        現在価格からお見積もりを自動作成します。
+    </div>
+
+</header>
+
+
+<section class="card" id="loadingSection">
+
+    <div class="loading">
+        現在の販売価格を読み込んでいます...
+    </div>
+
+</section>
+
+
+<section class="card hidden" id="errorSection">
+
+    <div class="error">
+
+        <strong>
+            注文ページを読み込めませんでした。
+        </strong>
+
+        <div
+            class="error-detail"
+            id="errorMessage"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<section class="card hidden" id="receptionNotice" role="status"></section>
+<section class="card hidden" id="pendingNotice">
+    <h2>送信結果の確認が必要な注文があります</h2>
+    <p>同じ注文番号で再確認します。注文内容は変更せず、下のボタンを押してください。</p>
+    <button class="primary" type="button" onclick="retryPendingOrder()">前回の注文の送信結果を確認する</button>
+</section>
+<div id="orderForm" class="hidden">
+
+
+<!-- ========================================
+     STEP 1
+======================================== -->
+
+<section class="card">
+
+    <div class="step">STEP 01</div>
+
+    <h2>メルカリのお名前</h2>
+
+    <div class="form-group">
+
+        <label for="mercariName">
+
+            メルカリのユーザー名
+
+            <span class="required">
+                必須
+            </span>
+
+        </label>
+
+        <input
+            type="text"
+            id="mercariName"
+            maxlength="50"
+            placeholder="例：たまごや"
+            autocomplete="off"
+        >
+
+        <div class="form-help">
+            通常配送の専用ページ作成時の確認に使用します。
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ========================================
+     STEP 2
+======================================== -->
+
+<section class="card">
+
+    <div class="step">STEP 02</div>
+
+    <h2>商品の状態を選択</h2>
+
+    <div class="choice-grid">
+
+        <div class="choice">
+
+            <input
+                type="radio"
+                name="type"
+                id="peeled"
+                value="peeled"
+                checked
+            >
+
+            <label for="peeled">
+                皮むき済み
+            </label>
+
+        </div>
+
+
+        <div class="choice">
+
+            <input
+                type="radio"
+                name="type"
+                id="unpeeled"
+                value="unpeeled"
+            >
+
+            <label for="unpeeled">
+
+                皮付き
+
+                <small>
+                    1,000円引き
+                </small>
+
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="unpeeled-notice hidden"
+        id="unpeeledNotice"
+    >
+        皮付きの場合は、表示価格から1,000円値引きされます。
+    </div>
+
+</section>
+
+
+<!-- ========================================
+     STEP 3
+======================================== -->
+
+<section class="card">
+
+    <div class="step">STEP 03</div>
+
+    <h2>希望重量を選択</h2>
+
+
+    <div class="weight-box">
+
+        <button
+            class="weight-button"
+            id="minusButton"
+            type="button"
+            onclick="changeWeight(-100)"
+        >
+            −
+        </button>
+
+
+        <div
+            class="weight"
+            id="weightDisplay"
+        >
+            800g
+        </div>
+
+
+        <button
+            class="weight-button"
+            id="plusButton"
+            type="button"
+            onclick="changeWeight(100)"
+        >
+            ＋
+        </button>
+
+    </div>
+
+
+    <div class="hint">
+        800g〜4kg / 100g単位
+    </div>
+
+
+    <div class="discount-guide">
+
+        まとめ買いでお得になります<br>
+
+        1.6kg〜 3%OFF ／
+        2.4kg〜 6%OFF ／
+        3.2kg〜 9%OFF ／
+        4kg 12%OFF
+
+    </div>
+
+
+    <div class="production-box">
+
+        <div class="production-title">
+            この商品は受注生産です
+        </div>
+
+        <div class="production-description">
+
+            ご注文をいただいてから、
+            島らっきょうの下処理・梱包を行います。
+
+        </div>
+
+
+        <div class="production-days">
+
+            現在の重量では、ご注文から発送まで
+
+            <strong id="productionDaysDisplay">
+                約1日
+            </strong>
+
+            を予定しています。
+
+        </div>
+
+
+        <div class="schedule-box">
+
+            <div class="schedule-item">
+
+                <div class="schedule-label">
+                    発送予定日
+                </div>
+
+                <div
+                    class="schedule-value"
+                    id="shippingDateDisplay"
+                >
+                    ―
+                </div>
+
+            </div>
+
+
+            <div class="schedule-item arrival">
+
+                <div class="schedule-label">
+                    到着想定日
+                </div>
+
+                <div
+                    class="schedule-value"
+                    id="arrivalDateDisplay"
+                >
+                    ―
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="schedule-note">
+
+            過去の配送実績をもとに、
+            <strong>発送予定日の4日後</strong>を
+            到着想定日として表示しています。
+
+            <br><br>
+
+            ※発送予定日・到着想定日は目安です。<br>
+            天候・交通状況・配送地域・配送会社の状況などにより、
+            前後する場合があります。
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ========================================
+     STEP 4
+======================================== -->
+
+<section class="card">
+
+    <div class="step">STEP 04</div>
+
+    <h2>配送方法を選択</h2>
+
+
+    <div class="choice-grid">
+
+        <div class="choice">
+
+            <input
+                type="radio"
+                name="shipping"
+                id="normal"
+                value="normal"
+                checked
+            >
+
+            <label for="normal">
+
+                通常配送
+
+                <small>
+                    送料無料・匿名配送
+                </small>
+
+            </label>
+
+        </div>
+
+
+        <div class="choice">
+
+            <input
+                type="radio"
+                name="shipping"
+                id="cool"
+                value="cool"
+            >
+
+            <label for="cool">
+
+                クール便
+
+                <small>
+                    BASEから購入
+                </small>
+
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <div class="shipping-guide">
+
+        <div class="shipping-guide-item normal">
+
+            <strong>通常配送</strong>
+
+            送料無料<br>
+            メルカリの匿名配送でお届けします。
+
+        </div>
+
+
+        <div class="shipping-guide-item cool">
+
+            <strong>クール便</strong>
+
+            BASEショップから<br>
+            ご購入いただけます。
+
+        </div>
+
+    </div>
+
+
+    <!-- BASE案内 -->
+
+    <div
+        class="base-guide hidden"
+        id="baseGuide"
+    >
+
+        <div class="base-guide-title">
+            クール便をご希望のお客様へ
+        </div>
+
+
+        <div class="base-guide-text">
+
+            クール便をご希望の場合は、
+            <strong>BASEショップからのご購入をお願いいたします。</strong>
+
+            <br><br>
+
+            クール便はメルカリ経由よりも、
+            BASEショップからご購入いただく方が
+            送料を抑えることができます。
+
+            <br><br>
+
+            BASEでは配送先情報をご入力いただき、
+            送料をご確認のうえ、そのままご購入いただけます。
+
+        </div>
+
+
+        <div class="base-reason">
+
+            <strong>クール便をBASEにする理由</strong><br>
+
+            メルカリでクール便を利用する場合と比べ、
+            配送料を抑えやすいため、
+            お客様の送料負担を少なくすることができます。
+
+        </div>
+
+
+        <a
+            href="#"
+            id="baseShopButton"
+            class="base-button"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            BASEでクール便を注文する
+        </a>
+
+
+        <div class="base-note">
+            ※BASEショップの商品ページが新しいタブで開きます。
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ========================================
+     STEP 5
+======================================== -->
+
+<section class="card">
+
+    <div class="step">STEP 05</div>
+
+    <h2>注文内容の確認</h2>
+
+
+    <div class="summary-row">
+        <span>商品状態</span>
+        <strong id="summaryType"></strong>
+    </div>
+
+
+    <div class="summary-row">
+        <span>重量</span>
+        <strong id="summaryWeight"></strong>
+    </div>
+
+
+    <div class="summary-row">
+        <span>発送までの目安</span>
+        <strong id="summaryProductionDays"></strong>
+    </div>
+
+
+    <div class="summary-row">
+        <span>発送予定日</span>
+        <strong id="summaryShippingDate"></strong>
+    </div>
+
+
+    <div class="summary-row">
+        <span>到着想定日</span>
+        <strong id="summaryArrivalDate"></strong>
+    </div>
+
+
+    <div class="summary-row">
+        <span>数量割引</span>
+        <strong id="summaryDiscount"></strong>
+    </div>
+
+
+    <div class="summary-row">
+        <span>配送方法</span>
+        <strong id="summaryShipping"></strong>
+    </div>
+
+
+    <div class="price">
+
+        <div class="price-label">
+            商品価格
+        </div>
+
+        <div
+            class="price-value"
+            id="priceDisplay"
+        >
+            ¥0
+        </div>
+
+
+        <div
+            class="price-shipping"
+            id="priceShipping"
+        >
+            送料無料
+        </div>
+
+
+        <div
+            class="discount-detail"
+            id="discountDetail"
+        >
+            数量割引なし
+        </div>
+
+
+        <div
+            class="discount-detail"
+            id="unpeeledDiscountDetail"
+        ></div>
+
+    </div>
+
+
+    <!-- 通常配送 -->
+
+    <div id="normalOrderArea">
+
+        <div class="normal-order-notice">
+
+            <strong>
+                通常配送は送料無料です。
+            </strong>
+
+            <br>
+
+            メルカリの匿名配送で発送します。
+
+            <br><br>
+
+            下のボタンから注文内容を送信してください。<br>
+            内容を確認後、メルカリにて専用ページを作成します。
+
+        </div>
+
+
+        <button
+            class="primary"
+            id="sendButton"
+            type="button"
+            onclick="sendOrder()"
+        >
+            注文内容を送信する
+        </button>
+
+    </div>
+
+
+    <!-- クール便 -->
+
+    <div
+        class="base-guide hidden"
+        id="baseOrderArea"
+    >
+
+        <div class="base-guide-title">
+            クール便はBASEからご購入ください
+        </div>
+
+
+        <div class="base-guide-text">
+
+            クール便の場合は、
+            このページから注文内容を送信する必要はありません。
+
+            <br><br>
+
+            下のボタンからBASEショップへ移動し、
+            配送先・送料をご確認のうえ
+            ご購入をお願いいたします。
+
+        </div>
+
+
+        <a
+            href="#"
+            id="baseShopButtonBottom"
+            class="base-button"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            BASEでクール便を注文する
+        </a>
+
+    </div>
+
+
+    <div class="notice">
+
+        <strong>
+            本商品は受注生産です。
+        </strong>
+
+        <br>
+
+        ご注文確定後に下処理・梱包を行います。
+
+        <br><br>
+
+        到着想定日は、過去の配送実績をもとに
+        <strong>発送予定日の4日後</strong>として算出しています。
+
+        <br><br>
+
+        ※発送予定日・到着想定日は目安です。<br>
+        天候・交通状況・配送地域などにより前後する場合があります。
+
+        <br><br>
+
+        ※島らっきょうの仕入れ価格は日々変動します。<br>
+        表示価格は現在の仕入れ価格をもとに算出しています。
+
+    </div>
+
+
+    <!-- 配送遅延保証 -->
+
+    <div class="delivery-support">
+
+        <div class="delivery-support-title">
+            配送遅延時の商品保証について
+        </div>
+
+
+        <div class="delivery-support-text">
+
+            悪天候や交通事情など、
+            配送中のやむを得ない事情により
+            <strong>大幅な配送遅延</strong>が発生し、
+            到着時に商品に著しい傷みが確認された場合は、
+            状況を確認のうえ再送対応を承ります。
+
+        </div>
+
+
+        <div class="delivery-support-highlight">
+
+            同一内容の商品を<br>
+
+            <strong>
+                当初の商品代金の70%
+            </strong>
+
+            <br>
+
+            で再購入いただけます。
+
+        </div>
+
+
+        <div class="delivery-support-text">
+
+            対象となる場合は、
+            ご購入いただいたサービスの取引メッセージ等から
+            ご連絡ください。
+
+            <br><br>
+
+            状況を確認後、
+            再送用の商品ページをご案内いたします。
+
+        </div>
+
+
+        <div class="delivery-support-flow">
+
+            ※商品の状態を確認するため、
+            到着時の商品の写真をご提示いただく場合があります。
+
+            <br>
+
+            ※配送遅延以外の理由による傷みや、
+            到着後の保管状況などによる品質低下については、
+            対象外となる場合があります。
+
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+
+<!-- ========================================
+     完了
+======================================== -->
+
+<section
+    class="card complete-card hidden"
+    id="completeSection"
+>
+
+    <div class="complete-icon">
+        ✓
+    </div>
+
+
+    <div class="complete-title">
+        注文内容を送信しました
+    </div>
+
+
+    <div class="complete-text">
+
+        ご注文ありがとうございます。<br>
+
+        内容を確認後、
+        メルカリにて専用ページを作成いたします。
+
+    </div>
+
+
+    <div class="mercari-follow-notice" role="note">
+        <strong>専用ページの出品通知について</strong>
+        メルカリで当店のアカウントをフォローして、
+        <b>出品通知をON</b>にしておいてください。<br>
+        専用ページの出品に気づきやすくなります。
+    </div>
+
+
+    <a class="action-link hidden" id="mercariShopButton" target="_blank" rel="noopener noreferrer">メルカリの当店ページを開く</a>
+    <button class="secondary" type="button" onclick="downloadCompletedOrder()">注文内容・注文番号をテキストでダウンロード</button>
+    <div class="status-message" id="copyOrderStatus" role="status"></div>
+
+    <div class="order-number">
+
+        注文番号
+
+        <strong id="completeOrderNumber"></strong>
+
+    </div>
+
+
+    <div
+        class="complete-summary"
+        id="completeSummary"
+    ></div>
+
+</section>
+
+</div>
+
+
+<dialog id="confirmDialog" aria-labelledby="confirmTitle">
+    <h2 id="confirmTitle">注文内容をご確認ください</h2>
+    <div id="confirmSummary" class="complete-summary"></div>
+    <p>内容を確認後、当店がメルカリに専用ページを作成します。お支払いはメルカリでお願いします。</p>
+    <button class="primary" id="confirmSendButton" type="button" onclick="confirmOrder()">この内容で送信する</button>
+    <button class="secondary" id="confirmBackButton" type="button" onclick="cancelConfirmation()">戻って修正する</button>
+    <div class="status-message" id="sendStatus" role="status"></div>
+</dialog>
+
+
+<dialog id="sendingDialog" aria-labelledby="sendingTitle" aria-describedby="sendingMessage sendingNote" aria-modal="true" tabindex="-1">
+    <div class="sending-spinner" aria-hidden="true"></div>
+    <h2 id="sendingTitle">注文メールを送信しています…</h2>
+    <p id="sendingMessage" role="status" aria-live="polite">このままお待ちください。</p>
+    <p class="sending-elapsed" id="sendingElapsed">待機時間：0秒</p>
+    <p class="sending-note" id="sendingNote">画面を閉じたり、再読み込みしたりせずにお待ちください。</p>
+</dialog>
+
+<script>
+
+/* ========================================
+   基本設定
+======================================== */
+
+const MIN_WEIGHT = 800;
+const MAX_WEIGHT = 4000;
+
+const DISCOUNT_RATE = 3;
+const UNPEELED_DISCOUNT = 1000;
+
+const DELIVERY_DAYS = 4;
+
+
+/*
+=========================================
+BASEの商品ページURL
+
+ここだけ実際の商品ページURLに変更してください。
+=========================================
+*/
+
+const BASE_SHOP_URL =
+    "https://tamagoya.base.ec/";
+
+
+let weight = 800;
+let basePrice = null;
+let gasUrl = "";
+let isSending = false;
+let siteSettings = {};
+let draftOrder = null;
+let pendingOrder = null;
+let completedOrder = null;
+const PENDING_KEY = "tamagoya.pendingOrder.v2";
+
+
+/* ========================================
+   settings.json
+======================================== */
+
+async function loadSettings() {
+
+    try {
+
+        const response =
+            await fetch(
+                "./settings.json?t=" +
+                Date.now(),
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "settings.jsonを取得できませんでした。"
+            );
+
+        }
+
+
+        const settings =
+            await response.json();
+
+
+        siteSettings = settings;
+        const shopURL = safeMercariURL(settings.mercariShopUrl);
+        if (shopURL) {
+            const link = document.getElementById("mercariShopButton");
+            link.href = shopURL;
+            link.classList.remove("hidden");
+        }
+        basePrice =
+            Number(
+                settings.basePrice
+            );
+
+
+        if (
+            !Number.isFinite(basePrice) ||
+            basePrice <= 0
+        ) {
+
+            throw new Error(
+                "販売価格が正しく設定されていません。"
+            );
+
+        }
+
+
+        gasUrl =
+            String(
+                settings.gasUrl || ""
+            ).trim();
+
+
+        if (!gasUrl) {
+
+            throw new Error(
+                "注文送信先が設定されていません。"
+            );
+
+        }
+
+
+        setupBaseButtons();
+
+
+        document
+            .getElementById("loadingSection")
+            .classList
+            .add("hidden");
+
+
+        document
+            .getElementById("orderForm")
+            .classList
+            .remove("hidden");
+
+
+        updateEstimate();
+        applyReceptionSettings();
+        restorePendingOrder();
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        document
+            .getElementById("loadingSection")
+            .classList
+            .add("hidden");
+
+
+        document
+            .getElementById("errorMessage")
+            .textContent =
+                error.message;
+
+
+        document
+            .getElementById("errorSection")
+            .classList
+            .remove("hidden");
+
+    }
+
+}
+
+
+/* ========================================
+   BASEボタン設定
+======================================== */
+
+function setupBaseButtons() {
+
+    const buttons = [
+
+        document.getElementById(
+            "baseShopButton"
+        ),
+
+        document.getElementById(
+            "baseShopButtonBottom"
+        )
+
+    ];
+
+
+    buttons.forEach(button => {
+
+        button.href =
+            BASE_SHOP_URL;
+
+
+        button.addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    !BASE_SHOP_URL ||
+                    BASE_SHOP_URL ===
+                    "ここにBASEの商品ページURL"
+                ) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "BASEショップのURLがまだ設定されていません。"
+                    );
+
+                }
+
+            }
+        );
+
+    });
+
+}
+
+
+/* ========================================
+   重量変更
+======================================== */
+
+function changeWeight(amount) {
+
+    weight += amount;
+
+
+    weight =
+        Math.max(
+            MIN_WEIGHT,
+            Math.min(
+                MAX_WEIGHT,
+                weight
+            )
+        );
+
+
+    updateEstimate();
+
+}
+
+
+/* ========================================
+   発送準備日数
+======================================== */
+
+function getProductionDays() {
+
+    if (weight <= 1600) {
+        return 1;
+    }
+
+    if (weight <= 3200) {
+        return 2;
+    }
+
+    return 3;
+
+}
+
+
+/* ========================================
+   日付
+======================================== */
+
+function addDays(date, days) {
+
+    const result =
+        new Date(date);
+
+
+    result.setDate(
+        result.getDate() +
+        days
+    );
+
+
+    return result;
+
+}
+
+
+function getShippingDate() {
+
+    return addDays(
+        new Date(),
+        getProductionDays()
+    );
+
+}
+
+
+function getArrivalDate() {
+
+    return addDays(
+        getShippingDate(),
+        DELIVERY_DAYS
+    );
+
+}
+
+
+function formatJapaneseDate(date) {
+
+    return (
+        date.getFullYear() +
+        "年" +
+        (date.getMonth() + 1) +
+        "月" +
+        date.getDate() +
+        "日"
+    );
+
+}
+
+
+/* ========================================
+   数量割引
+======================================== */
+
+function getDiscountRate() {
+
+    const blocks =
+        Math.floor(
+            weight / 800
+        );
+
+
+    return Math.max(
+        0,
+        (blocks - 1) *
+        DISCOUNT_RATE
+    );
+
+}
+
+
+/* ========================================
+   価格
+======================================== */
+
+function calculateOriginalPrice() {
+
+    return (
+        basePrice *
+        (weight / 800)
+    );
+
+}
+
+
+function calculateQuantityDiscount() {
+
+    return (
+        calculateOriginalPrice() *
+        (getDiscountRate() / 100)
+    );
+
+}
+
+
+function getUnpeeledDiscount() {
+
+    const type =
+        document.querySelector(
+            'input[name="type"]:checked'
+        ).value;
+
+
+    return (
+        type === "unpeeled"
+            ? UNPEELED_DISCOUNT
+            : 0
+    );
+
+}
+
+
+function calculatePrice() {
+
+    let price =
+        calculateOriginalPrice()
+        -
+        calculateQuantityDiscount()
+        -
+        getUnpeeledDiscount();
+
+
+    price =
+        Math.max(
+            0,
+            price
+        );
+
+
+    return (
+        Math.round(
+            price / 10
+        ) *
+        10
+    );
+
+}
+
+
+function roundMoney(value) {
+
+    return (
+        Math.round(
+            value / 10
+        ) *
+        10
+    );
+
+}
+
+
+/* ========================================
+   重量表示
+======================================== */
+
+function formatWeight(grams) {
+
+    if (grams >= 1000) {
+
+        return (
+            (grams / 1000)
+                .toFixed(1)
+                .replace(".0", "")
+            +
+            "kg"
+        );
+
+    }
+
+
+    return grams + "g";
+
+}
+
+
+/* ========================================
+   配送方法
+======================================== */
+
+function updateShippingFields() {
+
+    const shipping =
+        document.querySelector(
+            'input[name="shipping"]:checked'
+        ).value;
+
+
+    const baseGuide =
+        document.getElementById(
+            "baseGuide"
+        );
+
+
+    const normalOrderArea =
+        document.getElementById(
+            "normalOrderArea"
+        );
+
+
+    const baseOrderArea =
+        document.getElementById(
+            "baseOrderArea"
+        );
+
+
+    const priceShipping =
+        document.getElementById(
+            "priceShipping"
+        );
+
+
+    if (shipping === "cool") {
+
+        baseGuide
+            .classList
+            .remove("hidden");
+
+
+        normalOrderArea
+            .classList
+            .add("hidden");
+
+
+        baseOrderArea
+            .classList
+            .remove("hidden");
+
+
+        priceShipping.textContent =
+            "クール便はBASEから購入";
+
+    } else {
+
+        baseGuide
+            .classList
+            .add("hidden");
+
+
+        normalOrderArea
+            .classList
+            .remove("hidden");
+
+
+        baseOrderArea
+            .classList
+            .add("hidden");
+
+
+        priceShipping.textContent =
+            "送料無料";
+
+    }
+
+}
+
+
+/* ========================================
+   見積もり更新
+======================================== */
+
+function updateEstimate() {
+
+    if (basePrice === null) {
+        return;
+    }
+
+
+    const type =
+        document.querySelector(
+            'input[name="type"]:checked'
+        ).value;
+
+
+    const shipping =
+        document.querySelector(
+            'input[name="shipping"]:checked'
+        ).value;
+
+
+    const typeText =
+        type === "peeled"
+            ? "皮むき済み"
+            : "皮付き";
+
+
+    const shippingText =
+        shipping === "normal"
+            ? "通常配送（送料無料・匿名配送）"
+            : "クール便（BASEから購入）";
+
+
+    const productionDays =
+        getProductionDays();
+
+
+    const shippingDate =
+        getShippingDate();
+
+
+    const arrivalDate =
+        getArrivalDate();
+
+
+    const discountRate =
+        getDiscountRate();
+
+
+    const discountAmount =
+        roundMoney(
+            calculateQuantityDiscount()
+        );
+
+
+    document
+        .getElementById("weightDisplay")
+        .textContent =
+            formatWeight(weight);
+
+
+    document
+        .getElementById("productionDaysDisplay")
+        .textContent =
+            "約" +
+            productionDays +
+            "日";
+
+
+    document
+        .getElementById("shippingDateDisplay")
+        .textContent =
+            formatJapaneseDate(
+                shippingDate
+            );
+
+
+    document
+        .getElementById("arrivalDateDisplay")
+        .textContent =
+            formatJapaneseDate(
+                arrivalDate
+            ) +
+            "ごろ";
+
+
+    document
+        .getElementById("summaryType")
+        .textContent =
+            typeText;
+
+
+    document
+        .getElementById("summaryWeight")
+        .textContent =
+            formatWeight(weight);
+
+
+    document
+        .getElementById("summaryProductionDays")
+        .textContent =
+            "約" +
+            productionDays +
+            "日";
+
+
+    document
+        .getElementById("summaryShippingDate")
+        .textContent =
+            formatJapaneseDate(
+                shippingDate
+            );
+
+
+    document
+        .getElementById("summaryArrivalDate")
+        .textContent =
+            formatJapaneseDate(
+                arrivalDate
+            ) +
+            "ごろ";
+
+
+    document
+        .getElementById("summaryDiscount")
+        .textContent =
+            discountRate > 0
+                ? discountRate + "% OFF"
+                : "なし";
+
+
+    document
+        .getElementById("summaryShipping")
+        .textContent =
+            shippingText;
+
+
+    document
+        .getElementById("priceDisplay")
+        .textContent =
+            "¥" +
+            calculatePrice()
+                .toLocaleString();
+
+
+    const discountDetail =
+        document.getElementById(
+            "discountDetail"
+        );
+
+
+    if (discountRate > 0) {
+
+        discountDetail.textContent =
+            "数量割引 " +
+            discountRate +
+            "%　−¥" +
+            discountAmount.toLocaleString();
+
+
+        discountDetail
+            .classList
+            .add("active");
+
+    } else {
+
+        discountDetail.textContent =
+            "数量割引なし";
+
+
+        discountDetail
+            .classList
+            .remove("active");
+
+    }
+
+
+    const unpeeledDetail =
+        document.getElementById(
+            "unpeeledDiscountDetail"
+        );
+
+
+    const unpeeledNotice =
+        document.getElementById(
+            "unpeeledNotice"
+        );
+
+
+    if (type === "unpeeled") {
+
+        unpeeledDetail.textContent =
+            "皮付き値引き　−¥" +
+            UNPEELED_DISCOUNT
+                .toLocaleString();
+
+
+        unpeeledDetail
+            .classList
+            .add("active");
+
+
+        unpeeledNotice
+            .classList
+            .remove("hidden");
+
+    } else {
+
+        unpeeledDetail.textContent =
+            "";
+
+
+        unpeeledDetail
+            .classList
+            .remove("active");
+
+
+        unpeeledNotice
+            .classList
+            .add("hidden");
+
+    }
+
+
+    document
+        .getElementById("minusButton")
+        .disabled =
+            weight <= MIN_WEIGHT;
+
+
+    document
+        .getElementById("plusButton")
+        .disabled =
+            weight >= MAX_WEIGHT;
+
+
+    updateShippingFields();
+
+}
+
+
+/* ========================================
+   注文番号
+======================================== */
+
+function createOrderNumber() {
+
+    const now =
+        new Date();
+
+
+    const date =
+        String(
+            now.getFullYear()
+        ).slice(-2)
+        +
+        String(
+            now.getMonth() + 1
+        ).padStart(2, "0")
+        +
+        String(
+            now.getDate()
+        ).padStart(2, "0");
+
+
+    const random =
+        Math.random()
+            .toString(36)
+            .substring(2, 7)
+            .toUpperCase();
+
+
+    return (
+        "RK-" +
+        date +
+        "-" +
+        random
+    );
+
+}
+
+
+/* ========================================
+   入力エラー
+======================================== */
+
+function showInputError(
+    element,
+    message
+) {
+
+    alert(message);
+
+
+    element.focus();
+
+
+    element.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+/* ========================================
+   注文送信
+======================================== */
+
+function safeMercariURL(value) {
+    try {
+        const url = new URL(value);
+        return url.protocol === "https:" && ["jp.mercari.com", "www.mercari.com", "mercari.com"].includes(url.hostname) ? url.href : "";
+    } catch (_) { return ""; }
+}
+
+function applyReceptionSettings() {
+    const closed = siteSettings.orderEnabled === false;
+    const notice = document.getElementById("receptionNotice");
+    if (closed) {
+        notice.textContent = siteSettings.receptionMessage || "現在、ご注文の受付を停止しています。";
+        if (siteSettings.reopenText) notice.textContent += " 再開予定：" + siteSettings.reopenText;
+        notice.classList.remove("hidden");
+        document.getElementById("orderForm").classList.add("hidden");
+    }
+}
+
+function setFormLocked(locked) {
+    document.querySelectorAll("#orderForm input, #orderForm button").forEach(el => el.disabled = locked);
+    if (!locked) updateEstimate();
+}
+
+function orderText(order) {
+    return [
+        "注文番号：" + order.orderNumber,
+        "メルカリユーザー名：" + order.mercariName,
+        "商品状態：" + order.type,
+        "希望重量：" + order.weight,
+        "商品価格：" + order.price,
+        "数量割引：" + order.discount,
+        "皮付き値引き：" + order.unpeeledDiscount,
+        "配送方法：" + order.shipping,
+        "発送までの目安：" + order.productionDays,
+        "発送予定日：" + order.shippingDate,
+        "到着想定日：" + order.arrivalDate
+    ].join("\n");
+}
+
+function displayOrder(id, order) {
+    document.getElementById(id).innerHTML = escapeHTML(orderText(order)).replace(/\n/g, "<br>");
+}
+
+function buildOrder() {
+    const type = document.querySelector('input[name="type"]:checked').value;
+    const rate = getDiscountRate();
+    return {
+        orderNumber: "RK-" + crypto.randomUUID(),
+        mercariName: document.getElementById("mercariName").value.trim(),
+        type: type === "peeled" ? "皮むき済み" : "皮付き",
+        productType: type,
+        weightGrams: weight,
+        weight: formatWeight(weight),
+        price: calculatePrice().toLocaleString() + "円",
+        originalOrderPrice: calculatePrice(),
+        discount: rate ? rate + "% OFF（−" + roundMoney(calculateQuantityDiscount()).toLocaleString() + "円）" : "なし",
+        unpeeledDiscount: type === "unpeeled" ? "1,000円引き" : "なし",
+        shipping: "通常配送（送料無料・匿名配送）",
+        shippingFee: "送料無料",
+        productionType: "受注生産",
+        productionDays: "約" + getProductionDays() + "日",
+        shippingDate: formatJapaneseDate(getShippingDate()),
+        arrivalDate: formatJapaneseDate(getArrivalDate()) + "ごろ",
+        reshipRate: 70
+    };
+}
+
+function sendOrder() {
+    if (isSending) return;
+    if (pendingOrder) { retryPendingOrder(); return; }
+    if (siteSettings.orderEnabled === false) { alert("現在、ご注文の受付を停止しています。"); return; }
+    if (document.querySelector('input[name="shipping"]:checked').value === "cool") {
+        alert("クール便はBASEショップからご購入ください。"); return;
+    }
+    const name = document.getElementById("mercariName");
+    if (!name.value.trim()) { showInputError(name, "メルカリのユーザー名を入力してください。"); return; }
+    draftOrder = buildOrder();
+    displayOrder("confirmSummary", draftOrder);
+    document.getElementById("sendStatus").textContent = "";
+    setFormLocked(true);
+    document.getElementById("confirmDialog").showModal();
+}
+
+function cancelConfirmation() {
+    if (isSending || pendingOrder) return;
+    draftOrder = null;
+    document.getElementById("confirmDialog").close();
+    setFormLocked(false);
+}
+
+function restorePendingOrder() {
+    try {
+        const saved = sessionStorage.getItem(PENDING_KEY);
+        if (!saved) return;
+        const parsed = JSON.parse(saved);
+        if (!parsed || typeof parsed.orderNumber !== "string" || !parsed.orderNumber.startsWith("RK-")) throw new Error("invalid saved order");
+        pendingOrder = parsed;
+        document.getElementById("pendingNotice").classList.remove("hidden");
+        setFormLocked(true);
+    } catch (_) {
+        document.getElementById("receptionNotice").textContent = "前回の注文情報を確認できません。送信済みか当店にご確認ください。";
+        document.getElementById("receptionNotice").classList.remove("hidden");
+        setFormLocked(true);
+    }
+}
+
+function retryPendingOrder() {
+    if (!pendingOrder || isSending) return;
+    draftOrder = pendingOrder;
+    displayOrder("confirmSummary", pendingOrder);
+    document.getElementById("sendStatus").textContent = "同じ注文番号で送信結果を確認します。";
+    document.getElementById("confirmBackButton").disabled = true;
+    const dialog = document.getElementById("confirmDialog");
+    if (!dialog.open) dialog.showModal();
+    confirmOrder();
+}
+
+
+let sendingTimer = null;
+function showSendingIndicator(isRetry) {
+    const dialog = document.getElementById("sendingDialog");
+    const message = document.getElementById("sendingMessage");
+    document.getElementById("sendingTitle").textContent = isRetry
+        ? "注文の送信結果を確認しています…" : "注文メールを送信しています…";
+    message.textContent = "このままお待ちください。";
+    document.getElementById("sendingElapsed").textContent = "待機時間：0秒";
+    document.getElementById("confirmDialog").setAttribute("aria-busy", "true");
+    const started = Date.now();
+    clearInterval(sendingTimer);
+    sendingTimer = setInterval(() => {
+        const seconds = Math.floor((Date.now() - started) / 1000);
+        document.getElementById("sendingElapsed").textContent = "待機時間：" + seconds + "秒";
+        if (seconds >= 30) {
+            message.textContent = "通信に時間がかかっています。結果が分かり次第、画面が切り替わります。";
+        } else if (seconds >= 15) {
+            message.textContent = "引き続き処理中です。このままお待ちください。";
+        }
+    }, 1000);
+    if (!dialog.open) dialog.showModal();
+    dialog.focus();
+}
+function hideSendingIndicator() {
+    clearInterval(sendingTimer);
+    sendingTimer = null;
+    document.getElementById("sendingDialog").close();
+    document.getElementById("confirmDialog").removeAttribute("aria-busy");
+}
+document.getElementById("sendingDialog").addEventListener("cancel", event => event.preventDefault());
+
+async function confirmOrder() {
+    if (isSending || !draftOrder) return;
+    const status = document.getElementById("sendStatus");
+    const button = document.getElementById("confirmSendButton");
+    // 通信前に保存。結果が不明な場合は、必ず同じ注文番号・内容で再確認します。
+    try {
+        sessionStorage.setItem(PENDING_KEY, JSON.stringify(draftOrder));
+    } catch (_) {
+        status.textContent = "注文番号を保存できません。ブラウザの保存設定をご確認ください。送信は行っていません。";
+        return;
+    }
+    const isRetry = Boolean(pendingOrder);
+    pendingOrder = draftOrder;
+    isSending = true;
+    button.disabled = true;
+    document.getElementById("confirmBackButton").disabled = true;
+    status.textContent = "送信しています…";
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 45000);
+    try {
+        showSendingIndicator(isRetry);
+        const response = await fetch(gasUrl, {
+            method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"},
+            body: JSON.stringify(pendingOrder), signal: controller.signal
+        });
+        if (!response.ok) throw new Error("通信エラー");
+        const result = await response.json();
+        if (result.ok !== true || result.mailSent !== true || result.orderNumber !== pendingOrder.orderNumber) {
+            if (result.retrySafe === true) {
+                sessionStorage.removeItem(PENDING_KEY);
+                pendingOrder = null;
+                document.getElementById("confirmBackButton").disabled = false;
+            }
+            throw new Error(result.message || "送信結果を確認できませんでした。");
+        }
+        completedOrder = {...pendingOrder, ...(result.order || {})};
+        // サーバーの注文番号を必ず表示。
+        completedOrder.orderNumber = result.orderNumber;
+        try { sessionStorage.removeItem(PENDING_KEY); } catch (_) { /* 再読込後も同じIDで確認可能 */ }
+        pendingOrder = null;
+        draftOrder = null;
+        document.getElementById("confirmDialog").close();
+        document.getElementById("orderForm").classList.add("hidden");
+        document.getElementById("pendingNotice").classList.add("hidden");
+        document.getElementById("completeOrderNumber").textContent = completedOrder.orderNumber;
+        displayOrder("completeSummary", completedOrder);
+        document.getElementById("completeSection").classList.remove("hidden");
+        window.scrollTo({top:0, behavior:"smooth"});
+    } catch (error) {
+        status.textContent = pendingOrder
+            ? "送信結果を確認できません。すでにメールが送信されている場合があります。同じ注文番号で再確認できます。別の注文を作成せず、この画面から再確認してください。 " + error.message
+            : error.message;
+    } finally {
+        clearTimeout(timeout);
+        hideSendingIndicator();
+        isSending = false;
+        button.disabled = false;
+        button.textContent = pendingOrder ? "同じ注文番号で再確認する" : "この内容で送信する";
+    }
+}
+
+function downloadCompletedOrder() {
+    if (!completedOrder) return;
+    const status = document.getElementById("copyOrderStatus");
+    let objectURL;
+    try {
+        const text = "島らっきょう ご注文控え\r\n\r\n" +
+            orderText(completedOrder).replace(/\n/g, "\r\n") +
+            "\r\n\r\n発送予定日・到着想定日は目安です。\r\n";
+        // UTF-8 BOM付きにして、日本語の文字化けを防ぎます。
+        const blob = new Blob(["\uFEFF", text], {type: "text/plain;charset=utf-8"});
+        objectURL = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = objectURL;
+        const parts = new Intl.DateTimeFormat("en-GB", {
+            timeZone: "Asia/Tokyo",
+            year: "numeric", month: "2-digit", day: "2-digit",
+            hour: "2-digit", minute: "2-digit", second: "2-digit",
+            hourCycle: "h23"
+        }).formatToParts(new Date());
+        const dateParts = Object.fromEntries(parts.map(part => [part.type, part.value]));
+        const dateStamp = dateParts.year + dateParts.month + dateParts.day;
+        const timeStamp = dateParts.hour + dateParts.minute + dateParts.second;
+        link.download = "島らっきょう‗注文控え_" + dateStamp + "_" + timeStamp + ".txt";
+        document.body.appendChild(link);
+        try { link.click(); } finally { link.remove(); }
+        status.textContent = "ダウンロードを開始しました。ブラウザのダウンロード一覧をご確認ください。";
+    } catch (error) {
+        status.textContent = "ダウンロードを開始できませんでした。もう一度お試しください。";
+    } finally {
+        if (objectURL) setTimeout(() => URL.revokeObjectURL(objectURL), 60000);
+    }
+}
+
+
+document.getElementById("confirmDialog").addEventListener("cancel", event => {
+    event.preventDefault();
+    cancelConfirmation();
+});
+
+
+/* ========================================
+   HTMLエスケープ
+======================================== */
+
+function escapeHTML(text) {
+
+    return String(text)
+
+        .replace(/&/g, "&amp;")
+
+        .replace(/</g, "&lt;")
+
+        .replace(/>/g, "&gt;")
+
+        .replace(/"/g, "&quot;")
+
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* ========================================
+   イベント
+======================================== */
+
+document
+    .querySelectorAll(
+        'input[name="type"], input[name="shipping"]'
+    )
+    .forEach(
+        input => {
+
+            input.addEventListener(
+                "change",
+                updateEstimate
+            );
+
+        }
+    );
+
+
+/* ========================================
+   起動
+======================================== */
+
+loadSettings();
+
+</script>
+
+</body>
+
+</html>
 
 * {
     box-sizing: border-box;
