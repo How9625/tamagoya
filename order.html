@@ -971,7 +971,7 @@ button:disabled { opacity:.6; cursor:wait; }
 
         まとめ買いでお得になります<br>
 
-        500g 2,800円（割引なし）<br>
+        500g <span id="basePriceNote">2,800</span>円（割引なし）<br>
         1kgで2%OFF、以後500g増えるごとに2%ずつ割引<br>
         1.5kg 4%OFF ／ 2kg 6%OFF ／ 2.5kg 8%OFF<br>
         3kg 10%OFF ／ 3.5kg 12%OFF ／ 4kg 14%OFF
@@ -1538,7 +1538,9 @@ async function loadSettings() {
             link.href = shopURL;
             link.classList.remove("hidden");
         }
-        basePrice = PRICE_PER_500G;
+        basePrice = Number(settings.basePrice);
+        document.getElementById("basePriceNote").textContent = basePrice.toLocaleString("ja-JP");
+        if (!Number.isFinite(basePrice) || basePrice <= 0) throw new Error("販売価格の設定が不正です。");
 
         gasUrl =
             String(
