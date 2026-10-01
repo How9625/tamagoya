@@ -789,6 +789,22 @@ button:disabled { opacity:.6; cursor:wait; }
 }
 
 
+
+.recipe-navigation { margin-top: 20px; }
+.recipe-navigation a {
+    display: inline-block;
+    padding: 12px 20px;
+    border: 1px solid #35784c;
+    border-radius: 10px;
+    background: #eef7ef;
+    color: #285b39;
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+    line-height: 1.5;
+}
+.recipe-navigation a:hover { background: #dceee0; }
+.recipe-navigation a:focus-visible { outline: 3px solid #35784c; outline-offset: 3px; }
 </style>
 </head>
 
@@ -806,6 +822,9 @@ button:disabled { opacity:.6; cursor:wait; }
         現在価格からお見積もりを自動作成します。
     </div>
 
+    <nav class="recipe-navigation" aria-label="サイト内メニュー">
+        <a href="index.html">島らっきょうレシピを見る →</a>
+    </nav>
 </header>
 
 
