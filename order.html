@@ -988,7 +988,9 @@ button:disabled { opacity:.6; cursor:wait; }
         <div class="production-description">
 
             ご注文をいただいてから、
-            島らっきょうの下処理・梱包を行います。
+            島らっきょうの下処理・梱包を行います。<br>
+            1kgまで1日、2kgまで2日、3kgまで3日、4kgまで4日を目安に発送します。<br><br>
+            ※発送までの日数は、これまでのご注文への対応経験をもとに設定した暫定の目安です。下処理の進み具合や在庫状況により多少前後します。また、他のお客様のご注文と重なった場合は、目安よりお時間をいただくことがあります。
 
         </div>
 
@@ -998,7 +1000,7 @@ button:disabled { opacity:.6; cursor:wait; }
             現在の重量では、ご注文から発送まで
 
             <strong id="productionDaysDisplay">
-                約1日
+                1日以内（注文当日～翌日まで）
             </strong>
 
             を予定しています。
@@ -1633,19 +1635,12 @@ function changeWeight(amount) {
 ======================================== */
 
 function getProductionDays() {
-
-    if (weight <= 1600) {
-        return 1;
-    }
-
-    if (weight <= 3200) {
-        return 2;
-    }
-
-    return 3;
-
+    return Math.ceil(weight / 1000);
 }
 
+function productionDaysText(days) {
+    return ["", "1日以内（注文当日～翌日まで）", "2日以内（注文から翌々日まで）", "3日以内（注文から3日後まで）", "4日以内（注文から4日後まで）"][days];
+}
 
 /* ========================================
    日付
@@ -1965,9 +1960,7 @@ function updateEstimate() {
     document
         .getElementById("productionDaysDisplay")
         .textContent =
-            "約" +
-            productionDays +
-            "日";
+            productionDaysText(productionDays);
 
 
     document
@@ -2002,9 +1995,7 @@ function updateEstimate() {
     document
         .getElementById("summaryProductionDays")
         .textContent =
-            "約" +
-            productionDays +
-            "日";
+            productionDaysText(productionDays);
 
 
     document
@@ -2293,7 +2284,7 @@ function buildOrder() {
             totalEstimate:(calculatePrice()+quote.fee).toLocaleString()+"円（送料は別途着払い）"
         } : {}),
         productionType: "受注生産",
-        productionDays: "約" + getProductionDays() + "日",
+        productionDays: productionDaysText(getProductionDays()),
         shippingDate: formatJapaneseDate(getShippingDate()),
         arrivalDate: formatJapaneseDate(getArrivalDate()) + "ごろ",
         reshipRate: 70
