@@ -761,6 +761,31 @@ dialog::backdrop { background:rgba(0,0,0,.5); }
 button.secondary { width:100%; margin-top:12px; padding:14px; border:1px solid #777; border-radius:10px; background:#fff; color:#222; cursor:pointer; }
 button:disabled { opacity:.6; cursor:wait; }
 .status-message { margin-top:12px; line-height:1.8; color:#555; }
+
+/* メール送信中の待機画面 */
+#sendingDialog {
+    width: min(420px, calc(100vw - 48px));
+    box-sizing: border-box;
+    padding: 32px 24px;
+    border: 0;
+    border-radius: 20px;
+    color: #24352a;
+    text-align: center;
+    box-shadow: 0 20px 70px #0004;
+}
+#sendingDialog::backdrop { background: rgb(15 25 18 / 65%); }
+#sendingDialog h2 { margin: 20px 0 12px; font-size: 21px; line-height: 1.6; }
+#sendingDialog p { line-height: 1.8; }
+.sending-spinner {
+    width: 56px; height: 56px; margin: 0 auto;
+    border: 6px solid #e2eee5; border-top-color: #35784c;
+    border-radius: 50%; animation: sending-spin 1s linear infinite;
+}
+.sending-elapsed { font-size: 14px; color: #56685b; font-variant-numeric: tabular-nums; }
+.sending-note { margin-bottom: 0; padding: 12px; background: #eef7ef; border-radius: 10px; font-size: 13px; }
+@keyframes sending-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .sending-spinner { animation: none; } }
+
 </style>
 </head>
 
@@ -1535,6 +1560,15 @@ button:disabled { opacity:.6; cursor:wait; }
     <button class="primary" id="confirmSendButton" type="button" onclick="confirmOrder()">この内容で送信する</button>
     <button class="secondary" id="confirmBackButton" type="button" onclick="cancelConfirmation()">戻って修正する</button>
     <div class="status-message" id="sendStatus" role="status"></div>
+</dialog>
+
+
+<dialog id="sendingDialog" aria-labelledby="sendingTitle" aria-describedby="sendingMessage sendingNote" aria-modal="true" tabindex="-1">
+    <div class="sending-spinner" aria-hidden="true"></div>
+    <h2 id="sendingTitle">注文メールを送信しています…</h2>
+    <p id="sendingMessage" role="status" aria-live="polite">このままお待ちください。</p>
+    <p class="sending-elapsed" id="sendingElapsed">待機時間：0秒</p>
+    <p class="sending-note" id="sendingNote">画面を閉じたり、再読み込みしたりせずにお待ちください。</p>
 </dialog>
 
 <script>
@@ -2475,6 +2509,38 @@ function retryPendingOrder() {
     confirmOrder();
 }
 
+
+let sendingTimer = null;
+function showSendingIndicator(isRetry) {
+    const dialog = document.getElementById("sendingDialog");
+    const message = document.getElementById("sendingMessage");
+    document.getElementById("sendingTitle").textContent = isRetry
+        ? "注文の送信結果を確認しています…" : "注文メールを送信しています…";
+    message.textContent = "このままお待ちください。";
+    document.getElementById("sendingElapsed").textContent = "待機時間：0秒";
+    document.getElementById("confirmDialog").setAttribute("aria-busy", "true");
+    const started = Date.now();
+    clearInterval(sendingTimer);
+    sendingTimer = setInterval(() => {
+        const seconds = Math.floor((Date.now() - started) / 1000);
+        document.getElementById("sendingElapsed").textContent = "待機時間：" + seconds + "秒";
+        if (seconds >= 30) {
+            message.textContent = "通信に時間がかかっています。結果が分かり次第、画面が切り替わります。";
+        } else if (seconds >= 15) {
+            message.textContent = "引き続き処理中です。このままお待ちください。";
+        }
+    }, 1000);
+    if (!dialog.open) dialog.showModal();
+    dialog.focus();
+}
+function hideSendingIndicator() {
+    clearInterval(sendingTimer);
+    sendingTimer = null;
+    document.getElementById("sendingDialog").close();
+    document.getElementById("confirmDialog").removeAttribute("aria-busy");
+}
+document.getElementById("sendingDialog").addEventListener("cancel", event => event.preventDefault());
+
 async function confirmOrder() {
     if (isSending || !draftOrder) return;
     const status = document.getElementById("sendStatus");
@@ -2486,6 +2552,7 @@ async function confirmOrder() {
         status.textContent = "注文番号を保存できません。ブラウザの保存設定をご確認ください。送信は行っていません。";
         return;
     }
+    const isRetry = Boolean(pendingOrder);
     pendingOrder = draftOrder;
     isSending = true;
     button.disabled = true;
@@ -2494,6 +2561,7 @@ async function confirmOrder() {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 45000);
     try {
+        showSendingIndicator(isRetry);
         const response = await fetch(gasUrl, {
             method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"},
             body: JSON.stringify(pendingOrder), signal: controller.signal
@@ -2527,6 +2595,7 @@ async function confirmOrder() {
             : error.message;
     } finally {
         clearTimeout(timeout);
+        hideSendingIndicator();
         isSending = false;
         button.disabled = false;
         button.textContent = pendingOrder ? "同じ注文番号で再確認する" : "この内容で送信する";
