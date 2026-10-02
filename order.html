@@ -790,6 +790,18 @@ button:disabled { opacity:.6; cursor:wait; }
 .sending-steps li.problem { background: #fff1e6; color: #824511; outline: 2px solid #b86820; }
 .sending-panel.has-problem { border-color: #b86820; background: #fff9f2; }
 .sending-panel.has-problem strong { color: #824511; }
+
+/* 郵便番号による住所補完 */
+.postal-search-row { display:flex; gap:10px; align-items:stretch; }
+.postal-search-row input { flex:1; min-width:0; }
+.postal-search-button { padding:12px 16px; border:1px solid #777; border-radius:8px; background:#fff; color:#222; font-size:16px; cursor:pointer; white-space:nowrap; }
+.postal-search-button:focus-visible { outline:3px solid #267344; outline-offset:2px; }
+.postal-help, .postal-status { font-size:14px; line-height:1.7; margin:8px 0 0; }
+.postal-status { min-height:1.7em; }
+.postal-status[data-error="true"] { color:#a32323; }
+.postal-choice { width:100%; padding:12px; margin:8px 0; font-size:16px; }
+@media (max-width:380px) { .postal-search-row { flex-wrap:wrap; } .postal-search-row input { flex-basis:100%; } }
+
 </style>
 </head>
 
@@ -1198,8 +1210,21 @@ button:disabled { opacity:.6; cursor:wait; }
         <h3>クール便のお届け先</h3>
         <p>ヤマト運輸 クール宅急便は匿名配送ではありません。商品代金はメルカリでお支払い、冷蔵送料は着払い（お客様負担）です。入力情報は注文確認・発送に使用します。</p>
 <div class="form-group"><label for="recipientName">お届け先氏名 <span class="required">必須</span></label><input id="recipientName" type="text" autocomplete="shipping name" maxlength="80" placeholder="例：山田 太郎"></div>
-<div class="form-group"><label for="postalCode">郵便番号 <span class="required">必須</span></label><input id="postalCode" type="text" autocomplete="shipping postal-code" maxlength="8" placeholder="例：900-0001" inputmode="numeric"></div>
-<div class="form-group"><label for="streetAddress">市区町村・番地 <span class="required">必須</span></label><input id="streetAddress" type="text" autocomplete="shipping address-line1" maxlength="150" placeholder="例：那覇市○○1丁目2番3号"></div>
+<div class="form-group">
+    <label for="postalCode">郵便番号 <span class="required">必須</span></label>
+    <div class="postal-search-row">
+        <input id="postalCode" type="text" autocomplete="shipping postal-code" maxlength="8" placeholder="例：900-0001" inputmode="numeric" aria-describedby="postalHelp postalStatus">
+        <button id="postalSearchButton" class="postal-search-button" type="button">住所検索</button>
+    </div>
+    <p id="postalHelp" class="postal-help">7桁入力すると住所を検索します。番地・建物名・部屋番号は続けて入力してください。</p>
+    <p id="postalStatus" class="postal-status" role="status" aria-live="polite"></p>
+    <div id="postalCandidates" class="hidden">
+        <label for="postalAddressChoice">検索された住所</label>
+        <select id="postalAddressChoice" class="postal-choice"></select>
+        <button id="postalApplyButton" class="postal-search-button" type="button">選択した住所を入力する</button>
+    </div>
+</div>
+<div class="form-group"><label for="streetAddress">市区町村・町域・番地 <span class="required">必須</span></label><input id="streetAddress" type="text" autocomplete="shipping address-line1" maxlength="150" placeholder="例：那覇市○○1丁目2番3号"></div>
 <div class="form-group"><label for="building">建物名・部屋番号（任意）</label><input id="building" type="text" autocomplete="shipping address-line2" maxlength="100" placeholder="例：○○マンション101号室"></div>
 <div class="form-group"><label for="phone">電話番号 <span class="required">必須</span></label><input id="phone" type="tel" autocomplete="shipping tel" maxlength="20" placeholder="例：090-1234-5678"></div>
 </div>
@@ -2581,6 +2606,138 @@ document
 ======================================== */
 
 initChilledEstimate();
+
+/* ========================================
+   郵便番号による住所補完（zipcloud）
+======================================== */
+(function initPostalSearch() {
+    const postal = document.getElementById("postalCode");
+    const street = document.getElementById("streetAddress");
+    const prefecture = document.getElementById("destinationPrefecture");
+    const status = document.getElementById("postalStatus");
+    const candidates = document.getElementById("postalCandidates");
+    const choice = document.getElementById("postalAddressChoice");
+    const searchButton = document.getElementById("postalSearchButton");
+    const applyButton = document.getElementById("postalApplyButton");
+    let timer = null;
+    let controller = null;
+    let requestId = 0;
+    let found = [];
+    let foundZip = "";
+    let lastAutoStreet = "";
+    let lastAutoPrefecture = "";
+
+    function digits() {
+        return postal.value.normalize("NFKC").replace(/[^0-9]/g, "");
+    }
+    function message(text, error = false) {
+        status.textContent = text;
+        status.dataset.error = String(error);
+    }
+    function invalidate() {
+        clearTimeout(timer);
+        requestId++;
+        if (controller) controller.abort();
+        controller = null;
+        found = [];
+        foundZip = "";
+        candidates.classList.add("hidden");
+    }
+    function applyAddress(index) {
+        const result = found[index];
+        if (!result || digits() !== foundZip || postal.disabled) return;
+        prefecture.value = result.address1;
+        street.value = result.address2 + result.address3;
+        lastAutoStreet = street.value;
+        lastAutoPrefecture = prefecture.value;
+        postal.value = foundZip.slice(0, 3) + "-" + foundZip.slice(3);
+        candidates.classList.add("hidden");
+        prefecture.dispatchEvent(new Event("change", { bubbles:true }));
+        street.dispatchEvent(new Event("input", { bubbles:true }));
+        message("住所を入力しました。住所を確認し、番地・建物名・部屋番号を入力してください。");
+    }
+    async function searchAddress() {
+        invalidate();
+        const zip = digits();
+        if (zip.length !== 7) {
+            message("郵便番号を7桁で入力してください。", true);
+            return;
+        }
+        if (postal.disabled) return;
+        const currentId = requestId;
+        const initialStreet = street.value;
+        const initialPrefecture = prefecture.value;
+        const activeController = new AbortController();
+        controller = activeController;
+        const timeout = setTimeout(() => activeController.abort(), 10000);
+        message("住所を検索しています…");
+        try {
+            const response = await fetch("https://zipcloud.ibsnet.co.jp/api/search?zipcode=" + encodeURIComponent(zip), {
+                signal:activeController.signal,
+                credentials:"omit",
+                referrerPolicy:"no-referrer"
+            });
+            if (!response.ok) throw new Error("HTTP error");
+            const data = await response.json();
+            if (currentId !== requestId || zip !== digits() || postal.disabled) return;
+            if (data.status !== 200) throw new Error("API error");
+            if (!Array.isArray(data.results) || data.results.length === 0) {
+                message("該当する住所が見つかりませんでした。郵便番号を確認するか、住所を手入力してください。", true);
+                return;
+            }
+            found = data.results.filter(result =>
+                result && PREFECTURES_IN_CODE_ORDER.includes(result.address1) &&
+                typeof result.address2 === "string" && typeof result.address3 === "string"
+            ).filter((result, index, list) => list.findIndex(item =>
+                item.address1 === result.address1 && item.address2 === result.address2 && item.address3 === result.address3
+            ) === index);
+            if (!found.length) throw new Error("Invalid address");
+            foundZip = zip;
+            const untouched = street.value === initialStreet && prefecture.value === initialPrefecture;
+            const safeStreet = !street.value.trim() || street.value === lastAutoStreet;
+            const safePrefecture = !prefecture.value || prefecture.value === found[0].address1 || prefecture.value === lastAutoPrefecture;
+            if (found.length === 1 && untouched && safeStreet && safePrefecture) {
+                applyAddress(0);
+            } else {
+                choice.replaceChildren();
+                for (const [index, result] of found.entries()) {
+                    const option = document.createElement("option");
+                    option.value = String(index);
+                    option.textContent = result.address1 + result.address2 + result.address3;
+                    choice.appendChild(option);
+                }
+                candidates.classList.remove("hidden");
+                message(found.length > 1
+                    ? "住所の候補が複数あります。該当する住所を選んで入力してください。"
+                    : "住所が見つかりました。現在の入力を置き換える場合は、下のボタンを押してください（番地は再入力が必要です）。");
+            }
+        } catch (error) {
+            if (currentId !== requestId || zip !== digits() || postal.disabled) return;
+            message("住所を検索できませんでした。再検索するか、都道府県と住所を手入力してください。", true);
+        } finally {
+            clearTimeout(timeout);
+            if (controller === activeController) controller = null;
+        }
+    }
+    postal.addEventListener("input", event => {
+        invalidate();
+        message("");
+        if (!event.isComposing && digits().length === 7) timer = setTimeout(searchAddress, 350);
+    });
+    postal.addEventListener("compositionend", () => {
+        invalidate();
+        if (digits().length === 7) timer = setTimeout(searchAddress, 350);
+    });
+    postal.addEventListener("keydown", event => {
+        if (event.key === "Enter" && !event.isComposing) {
+            event.preventDefault();
+            searchAddress();
+        }
+    });
+    searchButton.addEventListener("click", searchAddress);
+    applyButton.addEventListener("click", () => applyAddress(Number(choice.value)));
+})();
+
 loadSettings();
 
 </script>
