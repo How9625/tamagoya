@@ -780,6 +780,16 @@ button:disabled { opacity:.6; cursor:wait; }
 @keyframes sending-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .sending-spinner { animation-duration: 3s; } }
 
+
+.sending-steps { list-style: none; padding: 0; margin: 18px 0; text-align: left; }
+.sending-steps li { padding: 12px; margin: 6px 0; border-radius: 8px; background: #e8ece8; color: #666; display: flex; gap: 10px; align-items: center; }
+.sending-steps li::before { content: attr(data-marker); width: 26px; height: 26px; border-radius: 50%; background: #d6ddd6; display: grid; place-items: center; flex-shrink: 0; font-weight: bold; }
+.sending-steps li.done { background: #e0f1e1; color: #205c24; }
+.sending-steps li.done::before { background: #2e7d32; color: white; }
+.sending-steps li.active { background: white; color: #205c24; outline: 2px solid #2e7d32; font-weight: bold; }
+.sending-steps li.problem { background: #fff1e6; color: #824511; outline: 2px solid #b86820; }
+.sending-panel.has-problem { border-color: #b86820; background: #fff9f2; }
+.sending-panel.has-problem strong { color: #824511; }
 </style>
 </head>
 
@@ -1438,6 +1448,11 @@ button:disabled { opacity:.6; cursor:wait; }
     </div>
 
 
+    <ol class="sending-steps" aria-label="注文送信の完了状況">
+        <li class="done" data-marker="✓">注文内容の準備が完了しました</li>
+        <li class="done" data-marker="✓">サーバーから結果を受信しました</li>
+        <li class="done" data-marker="✓">メール送信完了を確認しました</li>
+    </ol>
     <div class="complete-text">
 
         ご注文ありがとうございます。<br>
@@ -1486,8 +1501,13 @@ button:disabled { opacity:.6; cursor:wait; }
     <button class="primary" id="confirmSendButton" type="button" onclick="confirmOrder()">この内容で送信する</button>
     <button class="secondary" id="confirmBackButton" type="button" onclick="cancelConfirmation()">戻って修正する</button>
     <div id="sendingPanel" class="sending-panel hidden" role="status" aria-live="polite">
-        <div class="sending-spinner" aria-hidden="true"></div>
-        <strong>注文メールを送信しています</strong>
+        <div id="sendingSpinner" class="sending-spinner" aria-hidden="true"></div>
+        <strong id="sendingTitle">注文メールを送信しています</strong>
+        <ol class="sending-steps" aria-label="注文送信の進行状況">
+            <li id="sendStep1" data-marker="1">注文内容の準備</li>
+            <li id="sendStep2" data-marker="2">送信結果を待っています</li>
+            <li id="sendStep3" data-marker="3">メール送信完了の確認</li>
+        </ol>
         <p id="sendingHint">完了画面が表示されるまで、この画面を開いたままお待ちください。</p>
         <p class="sending-elapsed" aria-live="off">経過時間：<span id="sendingSeconds">0</span>秒</p>
     </div>
@@ -2338,6 +2358,7 @@ function sendOrder() {
     draftOrder = buildOrder();
     displayOrder("confirmSummary", draftOrder);
     document.getElementById("sendStatus").textContent = "";
+    document.getElementById("sendingPanel").classList.add("hidden");
     setFormLocked(true);
     document.getElementById("confirmDialog").showModal();
 }
@@ -2376,6 +2397,15 @@ function retryPendingOrder() {
     confirmOrder();
 }
 
+function setSendingStep(number, state, message) {
+    const step = document.getElementById("sendStep" + number);
+    step.className = state;
+    step.dataset.marker = state === "done" ? "✓" : state === "problem" ? "!" : String(number);
+    step.textContent = message;
+    if (state === "active") step.setAttribute("aria-current", "step");
+    else step.removeAttribute("aria-current");
+}
+
 async function confirmOrder() {
     if (isSending || !draftOrder) return;
     const status = document.getElementById("sendStatus");
@@ -2396,6 +2426,12 @@ async function confirmOrder() {
     const panel = document.getElementById("sendingPanel");
     const hint = document.getElementById("sendingHint");
     const elapsed = document.getElementById("sendingSeconds");
+    panel.classList.remove("has-problem");
+    document.getElementById("sendingSpinner").classList.remove("hidden");
+    document.getElementById("sendingTitle").textContent = "注文メールを送信しています";
+    setSendingStep(1, "done", "注文内容の準備が完了しました");
+    setSendingStep(2, "active", "送信結果を待っています");
+    setSendingStep(3, "", "メール送信完了の確認");
     const startedAt = Date.now();
     elapsed.textContent = "0";
     hint.textContent = "完了画面が表示されるまで、この画面を開いたままお待ちください。";
@@ -2414,6 +2450,7 @@ async function confirmOrder() {
             body: JSON.stringify(pendingOrder), signal: controller.signal
         });
         if (!response.ok) throw new Error("通信エラー");
+        setSendingStep(2, "active", "サーバーからの送信結果を確認しています");
         const result = await response.json();
         if (result.ok !== true || result.mailSent !== true || result.orderNumber !== pendingOrder.orderNumber) {
             if (result.retrySafe === true) {
@@ -2423,6 +2460,8 @@ async function confirmOrder() {
             }
             throw new Error(result.message || "送信結果を確認できませんでした。");
         }
+        setSendingStep(2, "done", "サーバーから結果を受信しました");
+        setSendingStep(3, "done", "メール送信完了を確認しました");
         completedOrder = {...pendingOrder, ...(result.order || {})};
         // サーバーの注文番号を必ず表示。
         completedOrder.orderNumber = result.orderNumber;
@@ -2437,13 +2476,18 @@ async function confirmOrder() {
         document.getElementById("completeSection").classList.remove("hidden");
         window.scrollTo({top:0, behavior:"smooth"});
     } catch (error) {
+        panel.classList.add("has-problem");
+        document.getElementById("sendingTitle").textContent = "送信完了を確認できませんでした";
+        setSendingStep(2, "problem", "送信結果を確認できませんでした");
+        setSendingStep(3, "", "メール送信完了は未確認です");
+        hint.textContent = pendingOrder ? "下のボタンで、同じ注文番号の送信結果を再確認できます。" : "下の案内をご確認ください。";
         status.textContent = pendingOrder
             ? "送信結果を確認できません。すでにメールが送信されている場合があります。同じ注文番号で再確認できます。別の注文を作成せず、この画面から再確認してください。 " + error.message
             : error.message;
     } finally {
         clearTimeout(timeout);
         clearInterval(progressTimer);
-        panel.classList.add("hidden");
+        document.getElementById("sendingSpinner").classList.add("hidden");
         document.getElementById("confirmDialog").removeAttribute("aria-busy");
         isSending = false;
         button.disabled = false;
