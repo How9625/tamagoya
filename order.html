@@ -770,6 +770,16 @@ dialog::backdrop { background:rgba(0,0,0,.5); }
 button.secondary { width:100%; margin-top:12px; padding:14px; border:1px solid #777; border-radius:10px; background:#fff; color:#222; cursor:pointer; }
 button:disabled { opacity:.6; cursor:wait; }
 .status-message { margin-top:12px; line-height:1.8; color:#555; }
+
+/* 注文メール送信中の表示 */
+.sending-panel { margin-top: 18px; padding: 22px 16px; border: 2px solid #2e7d32; border-radius: 14px; background: #f0f8f0; text-align: center; }
+.sending-spinner { width: 42px; height: 42px; margin: 0 auto 12px; border: 5px solid #c9e2ca; border-top-color: #2e7d32; border-radius: 50%; animation: sending-spin 1s linear infinite; }
+.sending-panel strong { display: block; font-size: 18px; color: #205c24; }
+.sending-panel p { margin: 10px 0 0; line-height: 1.7; }
+.sending-elapsed { font-variant-numeric: tabular-nums; color: #456247; }
+@keyframes sending-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .sending-spinner { animation-duration: 3s; } }
+
 </style>
 </head>
 
@@ -1475,6 +1485,12 @@ button:disabled { opacity:.6; cursor:wait; }
     <p>内容を確認後、当店がメルカリに専用ページを作成します。商品代金はメルカリでお支払いください。クール便の送料は別途着払いです。</p>
     <button class="primary" id="confirmSendButton" type="button" onclick="confirmOrder()">この内容で送信する</button>
     <button class="secondary" id="confirmBackButton" type="button" onclick="cancelConfirmation()">戻って修正する</button>
+    <div id="sendingPanel" class="sending-panel hidden" role="status" aria-live="polite">
+        <div class="sending-spinner" aria-hidden="true"></div>
+        <strong>注文メールを送信しています</strong>
+        <p id="sendingHint">完了画面が表示されるまで、この画面を開いたままお待ちください。</p>
+        <p class="sending-elapsed" aria-live="off">経過時間：<span id="sendingSeconds">0</span>秒</p>
+    </div>
     <div class="status-message" id="sendStatus" role="status"></div>
 </dialog>
 
@@ -2375,7 +2391,21 @@ async function confirmOrder() {
     isSending = true;
     button.disabled = true;
     document.getElementById("confirmBackButton").disabled = true;
-    status.textContent = "送信しています…";
+    status.textContent = "";
+    button.textContent = "送信中…";
+    const panel = document.getElementById("sendingPanel");
+    const hint = document.getElementById("sendingHint");
+    const elapsed = document.getElementById("sendingSeconds");
+    const startedAt = Date.now();
+    elapsed.textContent = "0";
+    hint.textContent = "完了画面が表示されるまで、この画面を開いたままお待ちください。";
+    panel.classList.remove("hidden");
+    document.getElementById("confirmDialog").setAttribute("aria-busy", "true");
+    const progressTimer = setInterval(() => {
+        const seconds = Math.floor((Date.now() - startedAt) / 1000);
+        elapsed.textContent = String(seconds);
+        if (seconds >= 15) hint.textContent = "送信結果の確認に時間がかかっています。画面を閉じたり再読み込みせず、そのままお待ちください。";
+    }, 1000);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 45000);
     try {
@@ -2412,6 +2442,9 @@ async function confirmOrder() {
             : error.message;
     } finally {
         clearTimeout(timeout);
+        clearInterval(progressTimer);
+        panel.classList.add("hidden");
+        document.getElementById("confirmDialog").removeAttribute("aria-busy");
         isSending = false;
         button.disabled = false;
         button.textContent = pendingOrder ? "同じ注文番号で再確認する" : "この内容で送信する";
