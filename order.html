@@ -5,7 +5,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>島らっきょう 注文・お見積もり</title>
+<title>島らっきょう通販のお見積もり・注文｜たまご屋</title>
+    <meta name="description" content="島らっきょうの購入をご検討の方へ。皮むき済み・皮付き、ご希望の量や配送方法を選んで料金の目安を確認し、注文を依頼できます。沖縄からのクール便送料や発送までの目安もご案内しています。">
+    <link rel="canonical" href="https://www.tama-goya.com/order.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:site_name" content="たまご屋">
+    <meta property="og:title" content="島らっきょう通販のお見積もり・注文｜たまご屋">
+    <meta property="og:description" content="島らっきょうの購入をご検討の方へ。皮むき済み・皮付き、ご希望の量や配送方法を選んで料金の目安を確認し、注文を依頼できます。沖縄からのクール便送料や発送までの目安もご案内しています。">
+    <meta property="og:url" content="https://www.tama-goya.com/order.html">
+
 
 <style>
 
@@ -761,35 +770,6 @@ dialog::backdrop { background:rgba(0,0,0,.5); }
 button.secondary { width:100%; margin-top:12px; padding:14px; border:1px solid #777; border-radius:10px; background:#fff; color:#222; cursor:pointer; }
 button:disabled { opacity:.6; cursor:wait; }
 .status-message { margin-top:12px; line-height:1.8; color:#555; }
-/* メール送信中の待機画面 */
-#sendingDialog {
-    width: min(420px, calc(100vw - 48px));
-    box-sizing: border-box;
-    padding: 32px 24px;
-    border: 0;
-    border-radius: 20px;
-    color: #24352a;
-    text-align: center;
-    box-shadow: 0 20px 70px #0004;
-}
-#sendingDialog::backdrop { background: rgb(15 25 18 / 65%); }
-#sendingDialog h2 { margin: 20px 0 12px; font-size: 21px; line-height: 1.6; }
-#sendingDialog p { line-height: 1.8; }
-.sending-spinner {
-    width: 56px; height: 56px; margin: 0 auto;
-    border: 6px solid #e2eee5; border-top-color: #35784c;
-    border-radius: 50%; animation: sending-spin 1s linear infinite;
-}
-.sending-elapsed { font-size: 14px; color: #56685b; font-variant-numeric: tabular-nums; }
-.sending-note { margin-bottom: 0; padding: 12px; background: #eef7ef; border-radius: 10px; font-size: 13px; }
-@keyframes sending-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-
-
-
 </style>
 </head>
 
@@ -1000,7 +980,7 @@ button:disabled { opacity:.6; cursor:wait; }
 
         まとめ買いでお得になります<br>
 
-        500g <span id="basePriceNote">2,800</span>円（割引なし）<br>
+        500g 2,800円（割引なし）<br>
         1kgで2%OFF、以後500g増えるごとに2%ずつ割引<br>
         1.5kg 4%OFF ／ 2kg 6%OFF ／ 2.5kg 8%OFF<br>
         3kg 10%OFF ／ 3.5kg 12%OFF ／ 4kg 14%OFF
@@ -1498,15 +1478,6 @@ button:disabled { opacity:.6; cursor:wait; }
     <div class="status-message" id="sendStatus" role="status"></div>
 </dialog>
 
-<dialog id="sendingDialog" aria-labelledby="sendingTitle" aria-describedby="sendingMessage sendingNote" aria-modal="true" tabindex="-1">
-    <div class="sending-spinner" aria-hidden="true"></div>
-    <h2 id="sendingTitle">注文メールを送信しています…</h2>
-    <p id="sendingMessage" role="status" aria-live="polite">このままお待ちください。</p>
-    <p class="sending-elapsed" id="sendingElapsed">待機時間：0秒</p>
-    <p class="sending-note" id="sendingNote">画面を閉じたり、再読み込みしたりせずにお待ちください。</p>
-</dialog>
-
-
 <script>
 
 /* ========================================
@@ -1576,9 +1547,7 @@ async function loadSettings() {
             link.href = shopURL;
             link.classList.remove("hidden");
         }
-        basePrice = Number(settings.basePrice);
-        document.getElementById("basePriceNote").textContent = basePrice.toLocaleString("ja-JP");
-        if (!Number.isFinite(basePrice) || basePrice <= 0) throw new Error("販売価格の設定が不正です。");
+        basePrice = PRICE_PER_500G;
 
         gasUrl =
             String(
@@ -2391,38 +2360,6 @@ function retryPendingOrder() {
     confirmOrder();
 }
 
-let sendingTimer = null;
-function showSendingIndicator(isRetry) {
-    const dialog = document.getElementById("sendingDialog");
-    const message = document.getElementById("sendingMessage");
-    document.getElementById("sendingTitle").textContent = isRetry
-        ? "注文の送信結果を確認しています…" : "注文メールを送信しています…";
-    message.textContent = "このままお待ちください。";
-    document.getElementById("sendingElapsed").textContent = "待機時間：0秒";
-    document.getElementById("confirmDialog").setAttribute("aria-busy", "true");
-    const started = Date.now();
-    clearInterval(sendingTimer);
-    sendingTimer = setInterval(() => {
-        const seconds = Math.floor((Date.now() - started) / 1000);
-        document.getElementById("sendingElapsed").textContent = "待機時間：" + seconds + "秒";
-        if (seconds >= 30) {
-            message.textContent = "通信に時間がかかっています。結果が分かり次第、画面が切り替わります。";
-        } else if (seconds >= 15) {
-            message.textContent = "引き続き処理中です。このままお待ちください。";
-        }
-    }, 1000);
-    if (!dialog.open) dialog.showModal();
-    dialog.focus();
-}
-function hideSendingIndicator() {
-    clearInterval(sendingTimer);
-    sendingTimer = null;
-    document.getElementById("sendingDialog").close();
-    document.getElementById("confirmDialog").removeAttribute("aria-busy");
-}
-document.getElementById("sendingDialog").addEventListener("cancel", event => event.preventDefault());
-
-
 async function confirmOrder() {
     if (isSending || !draftOrder) return;
     const status = document.getElementById("sendStatus");
@@ -2434,7 +2371,6 @@ async function confirmOrder() {
         status.textContent = "注文番号を保存できません。ブラウザの保存設定をご確認ください。送信は行っていません。";
         return;
     }
-    const isRetry = Boolean(pendingOrder);
     pendingOrder = draftOrder;
     isSending = true;
     button.disabled = true;
@@ -2443,7 +2379,6 @@ async function confirmOrder() {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 45000);
     try {
-        showSendingIndicator(isRetry);
         const response = await fetch(gasUrl, {
             method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"},
             body: JSON.stringify(pendingOrder), signal: controller.signal
@@ -2477,7 +2412,6 @@ async function confirmOrder() {
             : error.message;
     } finally {
         clearTimeout(timeout);
-        hideSendingIndicator();
         isSending = false;
         button.disabled = false;
         button.textContent = pendingOrder ? "同じ注文番号で再確認する" : "この内容で送信する";
