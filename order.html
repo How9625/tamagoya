@@ -866,13 +866,20 @@ button:disabled { opacity:.6; cursor:wait; }
 
     <div class="step">STEP 01</div>
 
-    <h2>メルカリのお名前</h2>
+    <h2>使用プラットフォーム・お名前</h2>
+    <div class="form-group">
+        <label for="platform">使用プラットフォーム <span class="required">必須</span></label>
+        <select id="platform" onchange="updatePlatformUI(); updateEstimate();">
+            <option value="mercari">メルカリ</option>
+            <option value="yahoo_fleamarket">Yahoo!フリマ</option>
+        </select>
+    </div>
 
     <div class="form-group">
 
         <label for="mercariName">
 
-            メルカリのユーザー名
+            <span data-platform-name>メルカリ</span>のユーザー名
 
             <span class="required">
                 必須
@@ -1171,7 +1178,7 @@ button:disabled { opacity:.6; cursor:wait; }
             <strong>通常配送</strong>
 
             送料無料<br>
-            メルカリの匿名配送でお届けします。
+            <span data-platform-name>メルカリ</span>の匿名配送でお届けします。
 
         </div>
 
@@ -1199,7 +1206,7 @@ button:disabled { opacity:.6; cursor:wait; }
         <p id="chilledFee" aria-live="polite"></p>
         <p id="chilledTotal" aria-live="polite" style="font-weight:bold;font-size:1.2em"></p>
         <p>送料はお客様負担・匿名配送不可です。商品1500gまでは60サイズ、2000g以上は80サイズで計算しています。実際の送料は梱包後の箱寸法により確定します。持込などの割引は含めていません。梱包材・保冷材は暫定500gとして計算し、60サイズは梱包込み2kg以内、80サイズは5kg以内が条件です。箱寸法や梱包重量が上限を超える場合は送料が変わります。</p>
-        <p>商品代金はメルカリの専用ページでお支払いください。送料は商品代金に含まれず、受け取り時に配送会社へお支払いいただきます。参考合計は商品代金と送料目安の合計です。</p>
+        <p>商品代金は<span data-platform-name>メルカリ</span>の専用ページでお支払いください。送料は商品代金に含まれず、受け取り時に配送会社へお支払いいただきます。参考合計は商品代金と送料目安の合計です。</p>
         <details><summary>地域別送料表（冷蔵料金込み）</summary>
         <div style="overflow-x:auto"><table style="width:100%;text-align:left"><thead><tr><th>お届け先</th><th>60サイズ</th><th>80サイズ</th></tr></thead><tbody id="chilledRateRows"></tbody></table></div>
         </details>
@@ -1208,7 +1215,7 @@ button:disabled { opacity:.6; cursor:wait; }
 
     <div class="hidden" id="coolAddressFields">
         <h3>クール便のお届け先</h3>
-        <p>ヤマト運輸 クール宅急便は匿名配送ではありません。商品代金はメルカリでお支払い、冷蔵送料は着払い（お客様負担）です。入力情報は注文確認・発送に使用します。</p>
+        <p>ヤマト運輸 クール宅急便は匿名配送ではありません。商品代金は<span data-platform-name>メルカリ</span>でお支払い、冷蔵送料は着払い（お客様負担）です。入力情報は注文確認・発送に使用します。</p>
 <div class="form-group"><label for="recipientName">お届け先氏名 <span class="required">必須</span></label><input id="recipientName" type="text" autocomplete="shipping name" maxlength="80" placeholder="例：山田 太郎"></div>
 <div class="form-group">
     <label for="postalCode">郵便番号 <span class="required">必須</span></label>
@@ -1335,12 +1342,12 @@ button:disabled { opacity:.6; cursor:wait; }
 
             <br>
 
-            <span id="deliveryMethodNote">メルカリの匿名配送で発送します。</span>
+            <span id="deliveryMethodNote"><span data-platform-name>メルカリ</span>の匿名配送で発送します。</span>
 
             <br><br>
 
             下のボタンから注文内容を送信してください。<br>
-            内容を確認後、メルカリにて専用ページを作成します。
+            内容を確認後、<span data-platform-name>メルカリ</span>にて専用ページを作成します。
 
         </div>
 
@@ -1483,20 +1490,20 @@ button:disabled { opacity:.6; cursor:wait; }
         ご注文ありがとうございます。<br>
 
         内容を確認後、
-        メルカリにて専用ページを作成いたします。
+        <span data-platform-name>メルカリ</span>にて専用ページを作成いたします。
 
     </div>
 
 
     <div class="mercari-follow-notice" role="note">
         <strong>専用ページの出品通知について</strong>
-        メルカリで当店のアカウントをフォローして、
+        <span data-platform-name>メルカリ</span>で当店のアカウントをフォローして、
         <b>出品通知をON</b>にしておいてください。<br>
         専用ページの出品に気づきやすくなります。
     </div>
 
 
-    <a class="action-link hidden" id="mercariShopButton" target="_blank" rel="noopener noreferrer">メルカリの当店ページを開く</a>
+    <a class="action-link hidden" id="mercariShopButton" target="_blank" rel="noopener noreferrer"><span data-platform-name>メルカリ</span>の当店ページを開く</a>
     <button class="secondary" type="button" onclick="downloadCompletedOrder()">注文内容・注文番号をテキストでダウンロード</button>
     <div class="status-message" id="copyOrderStatus" role="status"></div>
 
@@ -1522,7 +1529,7 @@ button:disabled { opacity:.6; cursor:wait; }
 <dialog id="confirmDialog" aria-labelledby="confirmTitle">
     <h2 id="confirmTitle">注文内容をご確認ください</h2>
     <div id="confirmSummary" class="complete-summary"></div>
-    <p>内容を確認後、当店がメルカリに専用ページを作成します。商品代金はメルカリでお支払いください。クール便の送料は別途着払いです。</p>
+    <p>内容を確認後、当店が<span data-platform-name>メルカリ</span>に専用ページを作成します。商品代金は<span data-platform-name>メルカリ</span>でお支払いください。クール便の送料は別途着払いです。</p>
     <button class="primary" id="confirmSendButton" type="button" onclick="confirmOrder()">この内容で送信する</button>
     <button class="secondary" id="confirmBackButton" type="button" onclick="cancelConfirmation()">戻って修正する</button>
     <div id="sendingPanel" class="sending-panel hidden" role="status" aria-live="polite">
@@ -1606,7 +1613,7 @@ async function loadSettings() {
         if (shopURL) {
             const link = document.getElementById("mercariShopButton");
             link.href = shopURL;
-            link.classList.remove("hidden");
+            updatePlatformUI();
         }
         basePrice = PRICE_PER_500G;
 
@@ -1958,8 +1965,8 @@ function updateShippingFields() {
     document.getElementById("coolAddressFields").classList.toggle("hidden", !cool);
     document.getElementById("chilledEstimate").classList.toggle("hidden", !cool);
     for (const id of ["recipientName", "postalCode", "streetAddress", "phone", "destinationPrefecture"]) document.getElementById(id).required = cool;
-    document.getElementById("orderPaymentNote").textContent = cool ? "商品代金はメルカリでお支払い、クール送料は別途着払いです。" : "通常配送は送料無料です。";
-    document.getElementById("deliveryMethodNote").textContent = cool ? "ヤマト運輸 クール宅急便で発送します（匿名配送不可）。" : "メルカリの匿名配送で発送します。";
+    document.getElementById("orderPaymentNote").textContent = cool ? "商品代金は" + platformLabel(document.getElementById("platform").value) + "でお支払い、クール送料は別途着払いです。" : "通常配送は送料無料です。";
+    document.getElementById("deliveryMethodNote").textContent = cool ? "ヤマト運輸 クール宅急便で発送します（匿名配送不可）。" : platformLabel(document.getElementById("platform").value) + "の匿名配送で発送します。";
     if (cool) updateChilledEstimate();
     else document.getElementById("priceShipping").textContent = "送料無料";
 }
@@ -2294,10 +2301,21 @@ function setFormLocked(locked) {
     if (!locked) updateEstimate();
 }
 
+function platformLabel(platform) {
+    return platform === "yahoo_fleamarket" ? "Yahoo!フリマ" : "メルカリ";
+}
+function updatePlatformUI(platform = document.getElementById("platform").value) {
+    const name = platformLabel(platform);
+    document.querySelectorAll("[data-platform-name]").forEach(el => el.textContent = name);
+    const link = document.getElementById("mercariShopButton");
+    link.classList.toggle("hidden", platform !== "mercari" || !link.getAttribute("href"));
+}
+
 function orderText(order) {
     return [
         "注文番号：" + order.orderNumber,
-        "メルカリユーザー名：" + order.mercariName,
+        "使用プラットフォーム：" + platformLabel(order.platform),
+        platformLabel(order.platform) + "ユーザー名：" + order.mercariName,
         "商品状態：" + order.type,
         "希望重量：" + order.weight,
         "商品価格：" + order.price,
@@ -2331,6 +2349,8 @@ function buildOrder() {
     const quote = cool ? getCoolQuote(document.getElementById("destinationPrefecture").value, weight) : null;
     return {
         orderNumber: "RK-" + crypto.randomUUID(),
+        platform: document.getElementById("platform").value,
+        platformName: platformLabel(document.getElementById("platform").value),
         mercariName: document.getElementById("mercariName").value.trim(),
         type: type === "peeled" ? "皮むき済み" : "皮付き",
         productType: type,
@@ -2379,7 +2399,7 @@ function sendOrder() {
         }
     }
     const name = document.getElementById("mercariName");
-    if (!name.value.trim()) { showInputError(name, "メルカリのユーザー名を入力してください。"); return; }
+    if (!name.value.trim()) { showInputError(name, platformLabel(document.getElementById("platform").value) + "のユーザー名を入力してください。"); return; }
     draftOrder = buildOrder();
     displayOrder("confirmSummary", draftOrder);
     document.getElementById("sendStatus").textContent = "";
@@ -2498,6 +2518,7 @@ async function confirmOrder() {
         document.getElementById("pendingNotice").classList.add("hidden");
         document.getElementById("completeOrderNumber").textContent = completedOrder.orderNumber;
         displayOrder("completeSummary", completedOrder);
+        updatePlatformUI(completedOrder.platform);
         document.getElementById("completeSection").classList.remove("hidden");
         window.scrollTo({top:0, behavior:"smooth"});
     } catch (error) {
