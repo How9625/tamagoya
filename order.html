@@ -1557,7 +1557,6 @@ const WEIGHT_STEP = 500;
 const MAX_WEIGHT = 4000;
 
 const DISCOUNT_RATE = 2;
-const PRICE_PER_500G = 2800;
 const UNPEELED_DISCOUNT = 1000;
 
 const DELIVERY_DAYS = 4;
@@ -1615,7 +1614,15 @@ async function loadSettings() {
             link.href = shopURL;
             updatePlatformUI();
         }
-        basePrice = PRICE_PER_500G;
+        const configuredBasePrice = settings.basePrice;
+        if (
+            typeof configuredBasePrice !== "number" ||
+            !Number.isFinite(configuredBasePrice) ||
+            configuredBasePrice <= 0
+        ) {
+            throw new Error("settings.jsonのbasePriceに正しい価格を設定してください。");
+        }
+        basePrice = configuredBasePrice;
 
         gasUrl =
             String(
