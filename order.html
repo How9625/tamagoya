@@ -1019,10 +1019,9 @@ button:disabled { opacity:.6; cursor:wait; }
 
         まとめ買いでお得になります<br>
 
-        500g 2,800円（割引なし）<br>
-        1kgで2%OFF、以後500g増えるごとに2%ずつ割引<br>
-        1.5kg 4%OFF ／ 2kg 6%OFF ／ 2.5kg 8%OFF<br>
-        3kg 10%OFF ／ 3.5kg 12%OFF ／ 4kg 14%OFF
+        500gは割引なし<br>
+        1kg 2%OFF ／ 1.5kg 4%OFF ／ 2kg 6%OFF<br>
+        2kg以上は6%OFFで割引率が上限になります
 
     </div>
 
@@ -1557,6 +1556,7 @@ const WEIGHT_STEP = 500;
 const MAX_WEIGHT = 4000;
 
 const DISCOUNT_RATE = 2;
+const MAX_DISCOUNT_RATE = 6; // 2kgで割引率の上限に到達
 const UNPEELED_DISCOUNT = 1000;
 
 const DELIVERY_DAYS = 4;
@@ -1793,10 +1793,9 @@ function getDiscountRate() {
         );
 
 
-    return Math.max(
-        0,
-        (blocks - 1) *
-        DISCOUNT_RATE
+    return Math.min(
+        MAX_DISCOUNT_RATE,
+        Math.max(0, (blocks - 1) * DISCOUNT_RATE)
     );
 
 }
